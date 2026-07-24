@@ -370,3 +370,140 @@ Ejecutar desde  consola para verificar flujo completo
 init_mi_plugin(null,"https://back-lti.onrender.com")
 --------------------
 ------------
+
+                <label class="sub-switch"><input type="checkbox" id="check-voice" onchange="faroState.voz = this.checked; guardarPreferenciasBackend();"><span class="sub-slider sub-round"></span></label>
+
+                <span>Lenta</span><input type="range" id="voice-speed" min="0" max="100" value="50" oninput="faroState.velocidadVoz = this.value; guardarPreferenciasBackend()" style="margin: 0 10px;"><span>Rápida</span>
+
+                <input type="range" id="voice-volume" min="0" max="100" value="100" oninput="faroState.volumenVoz = this.value; guardarPreferenciasBackend()" style="margin: 0 10px;">
+
+                cambiarFuente(tipo)
+
+                seleccionarTamano(elemento, tipo)
+
+                seleccionarAlineacion(elemento, tipo)
+
+                ajustarSlider(id, cambio)
+
+                actualizarFiltros(guardar = true)
+
+                 toggleFiltroFijo(tipo)
+
+                 toggleClase(checkbox, tipo)
+
+                togglePosicion() 
+
+                cambiarVelocidadVoz(valor)
+
+                cambiarVolumenVoz(valor)
+
+                toggleVoz(checkbox)
+
+                aplicarPerfil(perfil)
+
+                async function guardarPreferenciasBackend(){
+    if(!FARO_READY){
+    console.warn(
+        "FARO todavía no está listo, no guardo preferencias"
+    );
+    return;
+}
+
+    try {
+
+
+        const preferencias = {
+
+            button_position:
+                faroState.posicionBoton,
+
+
+            contrast_mode:
+                faroState.altoContraste,
+
+
+            dark_mode:
+                faroState.modoOscuro,
+
+
+            font_family:
+                faroState.fuente,
+
+
+            font_size:
+                faroState.tamanoTexto,
+
+
+            alignment:
+                faroState.alineacion,
+
+
+            brightness:
+                faroState.brillo,
+
+
+            contrast:
+                faroState.contraste,
+
+
+            saturation:
+                faroState.saturacion,
+
+
+            grayscale:
+                faroState.grises,
+
+
+            voice:
+                faroState.voz,
+
+
+            voice_speed:
+                faroState.velocidadVoz,
+
+
+            voice_volume:
+                faroState.volumenVoz
+
+
+        };
+        console.log("📡 ENVIANDO PREFERENCIAS FARO:", preferencias);
+
+
+        await apiFetch(
+            "/api/v1/users/me/accessibility",
+            {
+
+                method:"PATCH",
+
+                body:
+                    JSON.stringify(preferencias)
+
+            }
+        );
+
+
+    }catch(e){
+
+        console.error(
+            "Error guardando FARO",
+            e
+        );
+
+    }
+
+}
+
+
+                 ESTA NO TIENE function actualizarContraste(){
+    console.log(
+    "Contraste:",
+    faroState.altoContraste
+);
+
+    document.body.classList.toggle(
+        "faro-high-contrast",
+        faroState.altoContraste
+    );
+
+}

@@ -6,7 +6,7 @@ defined('MOODLE_INTERNAL') || die();
  */
 function local_accesspanel_before_footer() {
 
-    global $USER, $COURSE, $CFG;
+    global $USER, $COURSE, $CFG, $PAGE;
 
     if (!isloggedin() || isguestuser()) {
         return '';
@@ -51,6 +51,7 @@ json_encode(
 . ';
 </script>
 ';
+    $PAGE->requires->js_call_amd('local_accesspanel/faro', 'init');
 
     return $script . $html;
 }
