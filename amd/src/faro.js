@@ -9,8 +9,6 @@ define([], function() {
 /* =========================================
    ESTADO GLOBAL
 ========================================= */
-console.log("FARO JS CARGADO - VERSION TEST 2026");
-console.log("🔥 FARO JS CARGADO");
 const faroState = {
 
     // Lectura
@@ -43,10 +41,6 @@ const faroState = {
 const FARO_TOUR_KEY = "FARO_TOUR_VISTO";
 
 function aplicarEstado() {
-
-    console.log("====== APLICAR ESTADO ======");
-
-    console.log(faroState);
 
     actualizarFuente();
 
@@ -214,11 +208,19 @@ function empezarFaro(){
 // TEXTO: Familia Tipográfica
 function cambiarFuente(tipo) {
 
+    const anterior = faroState.fuente;
+
     faroState.fuente = tipo;
 
     actualizarFuente();
 
     guardarPreferenciasBackend();
+
+    registrarEvento("ACCESSIBILITY_CHANGED", {
+        adjustment_type: "font_family",
+        old_value: anterior,
+        new_value: tipo
+    });
 
 }
 
@@ -239,6 +241,8 @@ function actualizarFuente() {
 // TEXTO: Tamaño y Alineación UI interactiva
 function seleccionarTamano(elemento, tipo) {
 
+    const anterior = faroState.tamanoTexto;
+
     elemento.parentNode
         .querySelectorAll(".size-pill")
         .forEach(p => p.classList.remove("active"));
@@ -250,6 +254,12 @@ function seleccionarTamano(elemento, tipo) {
     actualizarTamanoTexto();
 
     guardarPreferenciasBackend();
+
+    registrarEvento("ACCESSIBILITY_CHANGED", {
+        adjustment_type: "font_size",
+        old_value: anterior,
+        new_value: tipo
+    });
 
 }
 
@@ -269,6 +279,8 @@ function actualizarTamanoTexto() {
 
 function seleccionarAlineacion(elemento, tipo) {
 
+    const anterior = faroState.alineacion;
+
     elemento.parentNode
         .querySelectorAll(".align-pill")
         .forEach(p => p.classList.remove("active"));
@@ -280,6 +292,12 @@ function seleccionarAlineacion(elemento, tipo) {
     actualizarAlineacion();
 
     guardarPreferenciasBackend();
+
+    registrarEvento("ACCESSIBILITY_CHANGED", {
+        adjustment_type: "alignment",
+        old_value: anterior,
+        new_value: tipo
+    });
 
 }
 
@@ -327,6 +345,18 @@ function ajustarSlider(id, cambio) {
     actualizarFiltros();
 
     guardarPreferenciasBackend();
+
+    const mapa = {
+        "slider-brillo": "brightness",
+        "slider-contraste": "contrast",
+        "slider-saturacion": "saturation"
+    };
+
+    registrarEvento("ACCESSIBILITY_CHANGED", {
+        adjustment_type: mapa[id],
+        old_value: valor - cambio,
+        new_value: valor
+    });
 
 }
 
@@ -396,18 +426,10 @@ function actualizarFiltros(guardar = true) {
 // VISUALES: Toggles (Switches y Checkboxes)
 function toggleFiltroFijo(tipo) {
 
-    console.log("========== FILTRO ==========");
-    console.log("Tipo:", tipo);
-
     if(tipo === "grayscale") {
 
         faroState.grises =
             document.getElementById("check-grayscale").checked;
-
-        console.log(
-            "Nuevo grayscale:",
-            faroState.grises
-        );
 
     } else {
 
@@ -419,18 +441,18 @@ function toggleFiltroFijo(tipo) {
         return;
     }
 
-    console.log("Estado:", structuredClone(faroState));
-
     actualizarFiltros();
 
     guardarPreferenciasBackend();
+
+    registrarEvento("ACCESSIBILITY_CHANGED", {
+        adjustment_type: "grayscale",
+        old_value: !faroState.grises,
+        new_value: faroState.grises
+    });
 }
 
 function toggleClase(checkbox, tipo){
-
-    console.log("========== TOGGLE ==========");
-    console.log("Tipo:", tipo);
-    console.log("Checked:", checkbox.checked);
 
     switch(tipo){
 
@@ -439,12 +461,13 @@ function toggleClase(checkbox, tipo){
 
             faroState.modoOscuro = checkbox.checked;
 
-            console.log(
-                "Nuevo modoOscuro:",
-                faroState.modoOscuro
-            );
-
             actualizarModoOscuro();
+
+            registrarEvento("ACCESSIBILITY_CHANGED", {
+                adjustment_type: "dark_mode",
+                old_value: !checkbox.checked,
+                new_value: checkbox.checked
+            });
 
             break;
 
@@ -454,27 +477,22 @@ function toggleClase(checkbox, tipo){
 
             faroState.altoContraste = checkbox.checked;
 
-            console.log(
-                "Nuevo altoContraste:",
-                faroState.altoContraste
-            );
-
             actualizarContraste();
+            
+            registrarEvento("ACCESSIBILITY_CHANGED", {
+                adjustment_type: "contrast_mode",
+                old_value: !checkbox.checked,
+                new_value: checkbox.checked
+            });
 
             break;
 
     }
 
-    console.log("Estado:", structuredClone(faroState));
-
     guardarPreferenciasBackend();
 }
 
 function actualizarContraste(){
-    console.log(
-    "Contraste:",
-    faroState.altoContraste
-);
 
     document.body.classList.toggle(
         "faro-high-contrast",
@@ -484,10 +502,6 @@ function actualizarContraste(){
 }
 
 function actualizarModoOscuro(){
-    console.log(
-    "Modo oscuro:",
-    faroState.modoOscuro
-);
 
     document.body.classList.toggle(
         "faro-dark-mode",
@@ -497,10 +511,6 @@ function actualizarModoOscuro(){
 }
 
 function sincronizarControles(){
-
-    console.log("========== SINCRONIZANDO ==========");
-    console.log(structuredClone(faroState));
-
     // ==========================
     // TOGGLES
     // ==========================
@@ -508,33 +518,25 @@ function sincronizarControles(){
     const dark = document.getElementById("check-dark-mode");
 
     if(dark){
-        console.log("Antes de asignar DARK:", dark.checked);
         dark.checked = faroState.modoOscuro;
-        console.log("Después de asignar DARK:", dark.checked);
     }
 
     const contrast = document.getElementById("check-high-contrast");
 
     if(contrast){
-        console.log("Antes de asignar CONTRASTE:", contrast.checked);
         contrast.checked = faroState.altoContraste;
-        console.log("Después de asignar CONTRASTE:", contrast.checked);
     }
 
     const gray = document.getElementById("check-grayscale");
 
     if(gray){
-        console.log("Antes de asignar GRISES:", gray.checked);
         gray.checked = faroState.grises;
-        console.log("Después de asignar GRISES:", gray.checked);
     }
 
     const voice = document.getElementById("check-voice");
 
     if(voice){
-        console.log("Antes de asignar VOZ:", voice.checked);
         voice.checked = faroState.voz;
-        console.log("Después de asignar VOZ:", voice.checked);
     }
 
     // ==========================
@@ -579,130 +581,12 @@ function sincronizarControles(){
         align.classList.add("active");
     }
 
-    console.log("========== FIN SINCRONIZAR ==========");
-
 }
-
-// LECTURA: Asistencia de Voz
-document.addEventListener('click', function(e) {
-
-    console.log("🎤 CLICK DETECTADO PARA VOZ");
-
-    console.log("Estado voz:", faroState.voz);
-
-    if(!faroState.voz){
-
-        console.log("❌ Voz desactivada, salgo");
-        return;
-    }
-
-
-    if(e.target.closest('#faro-extension-root')){
-
-        console.log(
-            "❌ Click dentro de FARO, ignorado"
-        );
-
-        return;
-    }
-
-
-    console.log(
-        "Elemento clickeado:",
-        e.target
-    );
-
-
-    console.log(
-        "MAIN encontrado:",
-        e.target.closest("main")
-    );
-
-
-    const zona =
-        e.target.closest("main") ||
-        e.target.closest("#region-main") ||
-        e.target.closest(".page-content") ||
-        document.body;
-
-
-    console.log("Zona lectura:", zona);
-
-
-    const textToRead =
-        e.target.innerText ||
-        e.target.alt ||
-        e.target.value;
-
-
-    console.log(
-        "Texto encontrado:",
-        textToRead
-    );
-
-
-    if(!textToRead || textToRead.trim()===""){
-
-        console.log(
-            "❌ No hay texto para leer"
-        );
-
-        return;
-    }
-
-
-    console.log(
-        "🔊 INTENTO HABLAR:",
-        textToRead
-    );
-
-
-    window.speechSynthesis.cancel();
-
-
-    const msg =
-        new SpeechSynthesisUtterance(textToRead);
-
-
-    msg.volume =
-        faroState.volumenVoz / 100;
-
-
-    msg.rate =
-        0.5 +
-        (faroState.velocidadVoz / 100) * 1.5;
-
-
-    msg.lang = "es-ES";
-
-
-    msg.onstart = () => {
-        console.log("✅ VOZ INICIADA");
-    };
-
-
-    msg.onend = () => {
-        console.log("✅ VOZ FINALIZADA");
-    };
-
-
-    msg.onerror = (err)=>{
-
-        console.error(
-            "❌ ERROR SPEECH:",
-            err
-        );
-
-    };
-
-
-    window.speechSynthesis.speak(msg);
-
-
-});
 
 // POSICION BOTÓN
 function togglePosicion(){
+
+    const anterior = faroState.posicionBoton;
 
     faroState.posicionBoton =
         faroState.posicionBoton === "right"
@@ -712,6 +596,12 @@ function togglePosicion(){
     actualizarPosicionBoton();
 
     guardarPreferenciasBackend();
+
+    registrarEvento("ACCESSIBILITY_CHANGED", {
+        adjustment_type: "button_position",
+        old_value: anterior,
+        new_value: faroState.posicionBoton
+    });
 
 }
 
@@ -762,18 +652,8 @@ document.addEventListener('click', function(e) {
     }
 });
 
-function hablarFaro(texto){
+function hablarFaro(texto) {
 
-    console.log("🎤 hablarFaro llamado");
-    console.log("voz estado:", faroState.voz);
-    console.log("texto:", texto);
-
-    if(!faroState.voz){
-        console.log("❌ Voz apagada");
-        return;
-    }
-
-    // Detener cualquier lectura anterior
     window.speechSynthesis.cancel();
 
     const msg =
@@ -781,38 +661,101 @@ function hablarFaro(texto){
 
     msg.lang = "es-ES";
 
-    msg.onstart = ()=>{
-        console.log("🔊 Speech iniciado");
-    };
-
-    msg.onerror = (e)=>{
-        console.error("ERROR SPEECH", e);
-    };
-
     window.speechSynthesis.speak(msg);
+
 }
 
 function cambiarVelocidadVoz(valor){
+
+    const anterior = faroState.velocidadVoz;
 
     faroState.velocidadVoz = valor;
 
     guardarPreferenciasBackend();
 
+    registrarEvento("ACCESSIBILITY_CHANGED", {
+        adjustment_type: "voice_speed",
+        old_value: anterior,
+        new_value: valor
+    });
+
 }
 
 function cambiarVolumenVoz(valor){
+
+    const anterior = faroState.volumenVoz;
 
     faroState.volumenVoz = valor;
 
     guardarPreferenciasBackend();
 
+    registrarEvento("ACCESSIBILITY_CHANGED", {
+        adjustment_type: "voice_volume",
+        old_value: anterior,
+        new_value: valor
+    });
+
 }
 
 function toggleVoz(checkbox){
 
+    const anterior = faroState.voz;
+
     faroState.voz = checkbox.checked;
 
     guardarPreferenciasBackend();
+
+    registrarEvento("ACCESSIBILITY_CHANGED", {
+        adjustment_type: "voice",
+        old_value: anterior,
+        new_value: checkbox.checked
+    });
+
+}
+
+async function registrarEvento(tipo, datos = {}) {
+
+    try {
+
+        const body = {
+
+            event_type: tipo,
+
+            payload: datos,
+
+            resultado: "SUCCESS"
+
+        };
+
+        const response = await apiFetch(
+            "/api/v1/events",
+            {
+                method: "POST",
+                body: JSON.stringify(body)
+            }
+        );
+
+        const texto = await response.text();
+
+        if(!response.ok){
+
+            console.error(
+                "❌ Error evento FARO:",
+                response.status,
+                texto
+            );
+
+            return;
+        }
+
+    } catch(e) {
+
+        console.warn(
+            "❌ No se pudo registrar evento",
+            e
+        );
+
+    }
 
 }
 
@@ -858,15 +801,15 @@ function restablecerAjustes() {
 
     // Cerrar FARO
     cerrarTodo();
+
+    registrarEvento("ACCESSIBILITY_RESET");
+
 }
 
 // PERFILES RÁPIDOS (Actualizados con las nuevas tarjetas)
 function aplicarPerfil(perfil) {
 
-    console.log("=================================");
-    console.log("🎯 APLICAR PERFIL");
-    console.log("Perfil recibido:", perfil);
-    console.log("Estado ANTES:", structuredClone(faroState));
+    const perfilAnterior = faroState.perfil || "default";
 
     // Guardar perfil seleccionado
     faroState.perfil = perfil;
@@ -891,14 +834,11 @@ function aplicarPerfil(perfil) {
     switch(perfil){
 
         case "color":
-            console.log("➡ Perfil COLOR");
             faroState.grises = true;
             break;
 
         case "voz":
-            console.log("➡ Perfil VOZ");
             faroState.voz = true;
-            console.log("VOZ ACTIVADA:", faroState.voz);
             setTimeout(()=>{
                 hablarFaro("Asistente por voz activado");
             },300);
@@ -906,46 +846,38 @@ function aplicarPerfil(perfil) {
             break;
 
         case "fuentes":
-            console.log("➡ Perfil FUENTES");
             faroState.fuente = "dyslexic";
             faroState.tamanoTexto = "large";
             break;
 
         case "seguridad":
-            console.log("➡ Perfil SEGURIDAD");
             faroState.brillo = 30;
             faroState.saturacion = 20;
             faroState.contraste = 40;
             break;
 
         case "visibilidad":
-            console.log("➡ Perfil VISIBILIDAD");
             faroState.altoContraste = true;
             faroState.tamanoTexto = "large";
             break;
 
         case "enfoque":
-            console.log("➡ Perfil ENFOQUE");
             faroState.modoOscuro = true;
             faroState.tamanoTexto = "large";
             break;
     }
-
-    console.log("Estado DESPUÉS:", structuredClone(faroState));
-
-    console.log("▶ aplicarEstado()");
     aplicarEstado();
 
-    console.log("▶ sincronizarControles()");
     sincronizarControles();
 
-    console.log("▶ cerrarTodo()");
     cerrarTodo();
 
-    console.log("▶ guardarPreferenciasBackend()");
     guardarPreferenciasBackend();
 
-    console.log("=================================");
+    registrarEvento("PRESET_SELECTED", {
+        preset_name: perfil
+    });
+
 }
 
 // Secuencia de Onboarding del Faro
@@ -1061,29 +993,21 @@ function getAPI(){
 
 let FARO_TOKEN = sessionStorage.getItem("FARO_TOKEN") || null;
 
-
-console.log("FARO CONFIG:", window.FARO_CONFIG);
-console.log("API BACKEND:",getAPI());
 /**
  * Obtener JWT FARO desde backend
  */
 async function autenticarFaro() {
-    console.log("FARO CONFIG:", window.FARO_CONFIG);
-
 
     const token =
         sessionStorage.getItem("FARO_TOKEN");
 
-
     const exp =
         sessionStorage.getItem("FARO_TOKEN_EXP");
-
 
     if(token && exp){
 
         const ahora =
             Math.floor(Date.now()/1000);
-
 
         if(ahora < Number(exp)){
 
@@ -1094,10 +1018,6 @@ async function autenticarFaro() {
         }
 
     }
-
-
-    console.log("Generando nuevo JWT FARO");
-
 
     const r = await fetch(
         getAPI() + "/tool/token",
@@ -1134,22 +1054,16 @@ async function autenticarFaro() {
 
     }
 
-
     const data =
         await r.json();
 
-    console.log("TOKEN RESPONSE:", data);
-
-
     FARO_TOKEN =
         data.session_token;
-
 
     sessionStorage.setItem(
         "FARO_TOKEN",
         FARO_TOKEN
     );
-
 
     /*
        leer expiración del JWT
@@ -1267,39 +1181,15 @@ async function apiFetch(url, options={}){
  */
 async function obtenerConfiguracion(){
 
-    console.log("➡️ Entrando obtenerConfiguracion");
-
-
     try {
 
         const r = await apiFetch(
             "/api/v1/users/me/accessibility"
         );
 
-
-        console.log(
-            "STATUS CONFIG:",
-            r.status
-        );
-
-
         const texto = await r.text();
 
-
-        console.log(
-            "RESPUESTA RAW:",
-            texto
-        );
-
-
         const datos = JSON.parse(texto);
-
-
-        console.log(
-            "RESPUESTA COMPLETA CONFIG:",
-            datos
-        );
-
 
         return datos;
 
@@ -1323,9 +1213,6 @@ async function obtenerConfiguracion(){
  * Guardar preferencias
  */
 async function guardarPreferenciasBackend(){
-
-    console.log("========== GUARDANDO ==========");
-    console.trace();
 
     if(!FARO_READY){
     console.warn(
@@ -1392,8 +1279,7 @@ async function guardarPreferenciasBackend(){
 
 
         };
-        console.log("📡 ENVIANDO PREFERENCIAS FARO:", preferencias);
-
+      
 
         await apiFetch(
             "/api/v1/users/me/accessibility",
@@ -1500,13 +1386,6 @@ async function cargarPreferenciasBackend(){
             faroState.volumenVoz =
                 settings.voice_volume ?? 100;
 
-
-
-            console.log(
-                "Preferencias FARO cargadas:",
-                faroState
-            );
-
         }
 
         const brillo = document.getElementById("slider-brillo");
@@ -1517,13 +1396,7 @@ async function cargarPreferenciasBackend(){
         if (contraste) contraste.value = faroState.contraste;
         if (saturacion) saturacion.value = faroState.saturacion;
 
-
-        aplicarEstado();
-
-
         sincronizarControles();
-
-
 
     }catch(e){
 
@@ -1535,6 +1408,7 @@ async function cargarPreferenciasBackend(){
     }
 
 }
+
 /* =========================================
    INICIALIZACIÓN FARO
 ========================================= */
@@ -1542,31 +1416,46 @@ let FARO_READY = false;
 
 async function iniciarFaro() {
 
+    const root = document.getElementById("faro-extension-root");
+
+    if (root) {
+        root.style.visibility = "hidden";
+    }
+
+    FARO_READY = false;
+
     try {
 
         await cargarPreferenciasBackend();
 
-        FARO_READY = true;
+        aplicarEstado();
 
-        console.log("✅ FARO_READY =", FARO_READY);
+        sincronizarControles();
 
         if (tourYaVisto()) {
             cerrarFaro();
         }
 
+        FARO_READY = true;
 
-    } catch(e) {
+    } catch (e) {
 
-        console.error(
-            "Error iniciando FARO:",
-            e
-        );
+        console.error(e);
+
+    } finally {
+
+        requestAnimationFrame(() => {
+
+            if (root) {
+                root.style.visibility = "visible";
+            }
+
+        });
 
     }
 
 }
 
-// Exponer funciones usadas por HTML
 // Exponer funciones usadas por HTML
 window.empezarFaro = empezarFaro;
 window.cerrarFaro = cerrarFaro;
@@ -1594,14 +1483,14 @@ window.restablecerAjustes = restablecerAjustes;
 
 window.faroState = faroState;
 
-console.log("🔥 FARO JS FINALIZADO");
+window.guardarPreferenciasBackend = guardarPreferenciasBackend;
+window.registrarEvento = registrarEvento;
+window.obtenerConfiguracion = obtenerConfiguracion;
 
 
 return {
 
     init: function() {
-
-        console.log("🚀 Moodle AMD llamó FARO");
 
         iniciarFaro();
 

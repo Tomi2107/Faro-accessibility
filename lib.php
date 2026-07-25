@@ -32,6 +32,7 @@ function local_accesspanel_before_footer() {
         'summary'    => get_config('local_accesspanel', 'enablesummary') !== '0',
         'progress'   => get_config('local_accesspanel', 'enableprogress') !== '0'
     ];
+    
 
     $templatepath = __DIR__ . '/templates/faro.html';
 
