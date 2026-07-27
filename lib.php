@@ -53,6 +53,6 @@ json_encode(
 </script>
 ';
     $PAGE->requires->js_call_amd('local_accesspanel/faro', 'init');
-
+    
     return $script . $html;
 }
