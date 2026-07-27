@@ -127,22 +127,18 @@ function cerrarFaro(){
 
 }
 
-function ocultarSubmenus(){
+function ocultarSubmenus() {
 
-    SUBMENUS.forEach(id=>{
+    SUBMENUS.forEach(id => {
 
         const submenu = document.getElementById(id);
 
-        if(submenu){
-
-            submenu.style.display = "none";
-
-            submenu.setAttribute(
-                "aria-hidden",
-                "true"
-            );
-
+        if (!submenu) {
+            return;
         }
+
+        submenu.style.display = "none";
+        submenu.setAttribute("aria-hidden", "true");
 
     });
 
@@ -194,29 +190,36 @@ function toggleMenu() {
 
 }
 
+let ultimoBotonMenu = null;
+
 function abrirSubmenu(idSubmenu) {
+
+    // Guarda el botón desde el que se abrió
+    ultimoBotonMenu = document.activeElement;
+
+    document.getElementById("menuAccesibilidad").style.display = "none";
+    document.getElementById("menuAccesibilidad")
+        .setAttribute("aria-hidden", "true");
 
     ocultarSubmenus();
 
-    document.getElementById("menuAccesibilidad").style.display = "none";
-
-    SUBMENUS.forEach(id => {
-
-        const submenu = document.getElementById(id);
-
-        if (submenu) {
-
-            submenu.setAttribute("aria-hidden", "true");
-
-        }
-
-    });
-
     const submenu = document.getElementById(idSubmenu);
 
-    submenu.style.display = "block";
+    if (!submenu) {
+        return;
+    }
 
+    submenu.style.display = "block";
     submenu.setAttribute("aria-hidden", "false");
+
+    // Llevar el foco al primer control del submenú
+    setTimeout(() => {
+
+        submenu.querySelector(
+            'button, input, select, textarea, [tabindex]:not([tabindex="-1"])'
+        )?.focus();
+
+    }, 50);
 
 }
 
@@ -231,9 +234,19 @@ function volverAlMenu() {
 
     setTimeout(() => {
 
-        menu.querySelector("button")?.focus();
+        if (ultimoBotonMenu) {
 
-    },50);
+            ultimoBotonMenu.focus();
+
+        } else {
+
+            menu.querySelector(
+                'button, [role="button"]'
+            )?.focus();
+
+        }
+
+    }, 50);
 
 }
 
@@ -872,6 +885,11 @@ function activarFocusTrap(root){
 
                 e.preventDefault();
                 primero.focus();
+
+                primero.scrollIntoView({
+                    block: "nearest",
+                    behavior: "smooth"
+                });
 
             }
 

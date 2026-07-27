@@ -60,7 +60,7 @@
             <div class="menu-list-icon"><span class="material-symbols-outlined">display_settings</span></div>
             <div class="menu-list-text"><h3>Ajustes Visuales</h3><p>Ajusta la diferencia entre el texto y el fondo</p></div>
         </div>
-        <div class="menu-list-item" onclick="abrirSubmenu('submenuTecladoVirtual')"  tabindex="0" role="button" aria-label= " Abrir teclado virtual">
+        <div class="menu-list-item" onclick="abrirSubmenu('submenuTecladoVirtual')"  tabindex="0" role="button" aria-label="Abrir teclado virtual">
             <div class="menu-list-icon"><span class="material-symbols-outlined">keyboard</span></div>
             <div class="menu-list-text"><h3>Teclado Virtual</h3><p>Ajusta la diferencia entre el texto y el fondo</p></div>
         </div>
@@ -132,7 +132,7 @@
         </div>
         <div class="sub-setting-row sub-toggle-item">
             <div class="sub-item-text"><h3>Contraste inteligente</h3><p>Optimiza automáticamente</p></div>
-            <label class="sub-switch"><input type="checkbox" id="check-high-contrast" onchange="toggleClase(this, 'faro-high-contrast')"><span class="sub-slider sub-round"></span></label>
+            <label class="sub-switch"><input type="checkbox" id="check-high-contrast" onchange="toggleClase(this, 'faro-high-contrast')"  tabindex="0" role="button" aria-label="Usar contraste inteligente"><span class="sub-slider sub-round"></span></label>
         </div>
         <div class="sub-setting-row">
             <div class="sub-item-text"><h3>Brillo</h3><p>Nivel de luz</p></div>
@@ -152,11 +152,11 @@
         </div>
         <div class="sub-setting-row sub-toggle-item">
             <div class="sub-item-text"><h3>Escala de grises</h3><p>Blanco y negro</p></div>
-            <label class="sub-switch"><input type="checkbox" id="check-grayscale" onchange="toggleFiltroFijo('grayscale')"><span class="sub-slider sub-round"></span></label>
+            <label class="sub-switch"><input type="checkbox" id="check-grayscale" onchange="toggleFiltroFijo('grayscale')"  tabindex="0" role="button" aria-label="Usar escala de grises"><span class="sub-slider sub-round"></span></label>
         </div>
         <div class="sub-setting-row sub-toggle-item">
             <div class="sub-item-text"><h3>Modo oscuro</h3><p>Fondos sin brillo</p></div>
-            <label class="sub-switch"><input type="checkbox" id="check-dark-mode" onchange="toggleClase(this, 'faro-dark-mode')"><span class="sub-slider sub-round"></span></label>
+            <label class="sub-switch"><input type="checkbox" id="check-dark-mode" onchange="toggleClase(this, 'faro-dark-mode')"  tabindex="0" role="button" aria-label="Usar modo oscuro"><span class="sub-slider sub-round"></span></label>
         </div>
     </div>
 
@@ -189,7 +189,7 @@
             </div>
             <div style="background: var(--faro-bg-card); border: 1px solid var(--faro-border); border-radius: 8px; padding: 10px 12px; display: flex; justify-content: space-between; align-items: center;">
                 <span style="font-size: 10px; font-weight: 700; color: var(--faro-primary);">Usar asistencia</span>
-                <label class="sub-switch"><input type="checkbox" id="check-voice" onchange="faroState.voz = this.checked; guardarPreferenciasBackend();"><span class="sub-slider sub-round"></span></label>
+                <label class="sub-switch"><input type="checkbox" id="check-voice" onchange="faroState.voz = this.checked; guardarPreferenciasBackend();" tabindex="0" role="button" aria-label="Usar Asistente"><span class="sub-slider sub-round"></span></label>
             </div>
         </div>
         <div class="sub-setting-row">

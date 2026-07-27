@@ -1,7 +1,5 @@
 Abrir faro con teclado
 Alt+F
-o
-Ctrl+Alt+A
 
 Salir
 Esc

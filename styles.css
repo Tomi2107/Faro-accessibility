@@ -260,6 +260,10 @@ select:focus-visible {
 .sub-switch input:checked + .sub-slider:before { transform: translateX(14px); }
 .sub-slider.sub-round { border-radius: 20px; }
 .sub-slider.sub-round:before { border-radius: 50%; }
+.sub-switch input:focus-visible + .sub-slider,
+.sub-switch input:focus + .sub-slider {
+    box-shadow: 0 0 0 3px #0066ff;
+}
 
 /* ---------------------------------------------------
    NUEVO GRID DE PERFILES M3 (Alineado a Izquierda)
