@@ -9,6 +9,13 @@ define([], function() {
 /* =========================================
    ESTADO GLOBAL
 ========================================= */
+const FARO_FILTER_DEFAULTS = Object.freeze({
+    brillo: 50,
+    contraste: 50,
+    saturacion: 50,
+    grises: false
+});
+
 const faroState = {
 
     // Lectura
@@ -22,10 +29,10 @@ const faroState = {
     alineacion: "left",       // left | center | right
 
     // Visual
-    brillo: 50,
-    contraste: 50,
-    saturacion: 50,
-    grises: false,
+    brillo: FARO_FILTER_DEFAULTS.brillo,
+    contraste: FARO_FILTER_DEFAULTS.contraste,
+    saturacion: FARO_FILTER_DEFAULTS.saturacion,
+    grises: FARO_FILTER_DEFAULTS.grises,
 
     altoContraste: false,
     modoOscuro: false,
@@ -386,35 +393,62 @@ function actualizarAlineacion() {
 }
 
 // VISUALES: Filtros de imagen CSS (Brillo, Contraste, Saturación)
-function ajustarSlider(id, cambio) {
+function sincronizarValorFiltro(id, valor) {
 
     const slider = document.getElementById(id);
+    const valorNumerico = Number(valor);
 
-    let valor = Number(slider.value) + cambio;
+    if(!slider) return;
 
-    valor = Math.max(0, Math.min(100, valor));
+    slider.value = valorNumerico;
 
-    slider.value = valor;
+    const valorTexto = valorNumerico === 50
+        ? "Estándar"
+        : valorNumerico < 50
+            ? `Reducido (${valorNumerico})`
+            : `Aumentado (${valorNumerico})`;
+
+    slider.setAttribute("aria-valuetext", valorTexto);
+
+    const output = document.getElementById(id.replace("slider-", "valor-"));
+    if(output) output.textContent = valorTexto;
+}
+
+// La entrada directa necesita una ruta propia para no releer otros sliders.
+function actualizarValorFiltro(id, valor) {
+
+    const valorNumerico = Math.max(0, Math.min(100, Number(valor)));
 
     switch(id){
 
         case "slider-brillo":
-            faroState.brillo = valor;
+            faroState.brillo = valorNumerico;
             break;
 
         case "slider-contraste":
-            faroState.contraste = valor;
+            faroState.contraste = valorNumerico;
             break;
 
         case "slider-saturacion":
-            faroState.saturacion = valor;
+            faroState.saturacion = valorNumerico;
             break;
 
+        default:
+            console.warn("Filtro FARO no reconocido:", id);
+            return;
     }
 
+    sincronizarValorFiltro(id, valorNumerico);
     actualizarFiltros();
+}
 
-    guardarPreferenciasBackend();
+function ajustarSlider(id, cambio) {
+
+    const slider = document.getElementById(id);
+    const valorAnterior = Number(slider.value);
+    const valor = Math.max(0, Math.min(100, valorAnterior + cambio));
+
+    actualizarValorFiltro(id, valor);
 
     const mapa = {
         "slider-brillo": "brightness",
@@ -424,73 +458,29 @@ function ajustarSlider(id, cambio) {
 
     registrarEvento("ACCESSIBILITY_CHANGED", {
         adjustment_type: mapa[id],
-        old_value: valor - cambio,
+        old_value: valorAnterior,
         new_value: valor
     });
-
 }
 
 function actualizarFiltros(guardar = true) {
 
-
-    if(guardar){
-
-        const brilloSlider =
-            document.getElementById("slider-brillo");
-
-        const contrasteSlider =
-            document.getElementById("slider-contraste");
-
-        const saturacionSlider =
-            document.getElementById("slider-saturacion");
-
-
-        if(brilloSlider)
-            faroState.brillo =
-                Number(brilloSlider.value);
-
-
-        if(contrasteSlider)
-            faroState.contraste =
-                Number(contrasteSlider.value);
-
-
-        if(saturacionSlider)
-            faroState.saturacion =
-                Number(saturacionSlider.value);
-
-    }
-
-
-    const brillo =
-        faroState.brillo / 50;
-
-    const contraste =
-        faroState.contraste / 30;
-
-    const saturacion =
-        faroState.saturacion / 40;
-
-
-    const grises =
-        faroState.grises
-        ? "grayscale(100%)"
-        : "";
-
+    const brillo = faroState.brillo / 50;
+    const contraste = faroState.contraste / 50;
+    const saturacion = faroState.saturacion / 50;
+    const grises = faroState.grises ? 100 : 0;
 
     document.body.style.filter =
     `
     brightness(${brillo})
-    saturate(${saturacion})
     contrast(${contraste})
-    ${grises}
+    saturate(${saturacion})
+    grayscale(${grises}%)
     `;
-
 
     if(guardar){
         guardarPreferenciasBackend();
     }
-
 }
 
 // VISUALES: Toggles (Switches y Checkboxes)
@@ -512,8 +502,6 @@ function toggleFiltroFijo(tipo) {
     }
 
     actualizarFiltros();
-
-    guardarPreferenciasBackend();
 
     registrarEvento("ACCESSIBILITY_CHANGED", {
         adjustment_type: "grayscale",
@@ -602,6 +590,10 @@ function sincronizarControles(){
     if(gray){
         gray.checked = faroState.grises;
     }
+
+    sincronizarValorFiltro("slider-brillo", faroState.brillo);
+    sincronizarValorFiltro("slider-contraste", faroState.contraste);
+    sincronizarValorFiltro("slider-saturacion", faroState.saturacion);
 
     const voice = document.getElementById("check-voice");
 
@@ -910,11 +902,7 @@ function restablecerAjustes() {
     faroState.tamanoTexto = "normal";
     faroState.alineacion = "left";
 
-    faroState.brillo = 50;
-    faroState.contraste = 50;
-    faroState.saturacion = 50;
-
-    faroState.grises = false;
+    Object.assign(faroState, FARO_FILTER_DEFAULTS);
     faroState.altoContraste = false;
     faroState.modoOscuro = false;
     faroState.perfil = null;
@@ -959,7 +947,7 @@ function aplicarPerfil(perfil) {
     faroState.volumenVoz = 100;
     faroState.velocidadVoz = 50;
 
-    faroState.grises = false;
+    faroState.grises = FARO_FILTER_DEFAULTS.grises;
     faroState.altoContraste = false;
     faroState.modoOscuro = false;
 
@@ -967,9 +955,9 @@ function aplicarPerfil(perfil) {
     faroState.tamanoTexto = "normal";
     faroState.alineacion = "left";
 
-    faroState.brillo = 50;
-    faroState.contraste = 50;
-    faroState.saturacion = 50;
+    faroState.brillo = FARO_FILTER_DEFAULTS.brillo;
+    faroState.contraste = FARO_FILTER_DEFAULTS.contraste;
+    faroState.saturacion = FARO_FILTER_DEFAULTS.saturacion;
 
     switch(perfil){
 
@@ -1484,7 +1472,7 @@ async function cargarPreferenciasBackend(){
 
 
             faroState.grises =
-                settings.grayscale ?? false;
+                settings.grayscale ?? FARO_FILTER_DEFAULTS.grises;
 
 
 
@@ -1505,15 +1493,15 @@ async function cargarPreferenciasBackend(){
             // Filtros visuales
 
             faroState.brillo =
-                settings.brightness ?? 50;
+                settings.brightness ?? FARO_FILTER_DEFAULTS.brillo;
 
 
             faroState.contraste =
-                settings.contrast ?? 50;
+                settings.contrast ?? FARO_FILTER_DEFAULTS.contraste;
 
 
             faroState.saturacion =
-                settings.saturation ?? 50;
+                settings.saturation ?? FARO_FILTER_DEFAULTS.saturacion;
 
 
 
@@ -1531,14 +1519,6 @@ async function cargarPreferenciasBackend(){
                 settings.voice_volume ?? 100;
 
         }
-
-        const brillo = document.getElementById("slider-brillo");
-        const contraste = document.getElementById("slider-contraste");
-        const saturacion = document.getElementById("slider-saturacion");
-
-        if (brillo) brillo.value = faroState.brillo;
-        if (contraste) contraste.value = faroState.contraste;
-        if (saturacion) saturacion.value = faroState.saturacion;
 
         sincronizarControles();
 
@@ -1618,6 +1598,7 @@ window.seleccionarTamano = seleccionarTamano;
 window.seleccionarAlineacion = seleccionarAlineacion;
 
 window.actualizarFiltros = actualizarFiltros;
+window.actualizarValorFiltro = actualizarValorFiltro;
 window.ajustarSlider = ajustarSlider;
 window.toggleFiltroFijo = toggleFiltroFijo;
 

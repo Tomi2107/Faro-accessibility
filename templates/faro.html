@@ -123,31 +123,33 @@
         <div class="sub-section-title">Mejoras visuales</div>
         
         <div class="sub-setting-row">
-            <div class="sub-item-text"><h3>Contraste</h3><p>Texto y fondo</p></div>
+            <div class="sub-item-text"><h3 id="label-contraste">Contraste</h3><p>Texto y fondo: <output id="valor-contraste" for="slider-contraste">Estándar</output></p></div>
             <div class="sub-slider-control">
-                <button class="sub-math-btn" onclick="ajustarSlider('slider-contraste', -10)"><span class="material-symbols-outlined" style="font-size: 16px;">remove</span></button>
-                <input type="range" id="slider-contraste" min="0" max="100" value="30" oninput="actualizarFiltros()">
-                <button class="sub-math-btn" onclick="ajustarSlider('slider-contraste', 10)"><span class="material-symbols-outlined" style="font-size: 16px;">add</span></button>
+                <button class="sub-math-btn" onclick="ajustarSlider('slider-contraste', -10)" aria-label="Disminuir contraste"><span class="material-symbols-outlined" aria-hidden="true" style="font-size: 16px;">remove</span></button>
+                <input type="range" id="slider-contraste" min="0" max="100" step="10" value="50" oninput="actualizarValorFiltro('slider-contraste', this.value)" aria-labelledby="label-contraste" aria-valuetext="Estándar">
+                <button class="sub-math-btn" onclick="ajustarSlider('slider-contraste', 10)" aria-label="Aumentar contraste"><span class="material-symbols-outlined" aria-hidden="true" style="font-size: 16px;">add</span></button>
             </div>
         </div>
         <div class="sub-setting-row sub-toggle-item">
+            <div class="sub-item-text"><h3 id="label-high-contrast">Contraste inteligente</h3><p>Optimiza automáticamente</p></div>
+            <label class="sub-switch"><input type="checkbox" id="check-high-contrast" onchange="toggleClase(this, 'faro-high-contrast')" aria-labelledby="label-high-contrast"><span class="sub-slider sub-round" aria-hidden="true"></span></label>
             <div class="sub-item-text"><h3>Contraste inteligente</h3><p>Optimiza automáticamente</p></div>
             <label class="sub-switch"><input type="checkbox" id="check-high-contrast" onchange="toggleClase(this, 'faro-high-contrast')"  tabindex="0" role="button" aria-label="Usar contraste inteligente"><span class="sub-slider sub-round"></span></label>
         </div>
         <div class="sub-setting-row">
-            <div class="sub-item-text"><h3>Brillo</h3><p>Nivel de luz</p></div>
+            <div class="sub-item-text"><h3 id="label-brillo">Brillo</h3><p>Nivel de luz: <output id="valor-brillo" for="slider-brillo">Estándar</output></p></div>
             <div class="sub-slider-control">
-                <button class="sub-math-btn" onclick="ajustarSlider('slider-brillo', -10)"><span class="material-symbols-outlined" style="font-size: 16px;">remove</span></button>
-                <input type="range" id="slider-brillo" min="0" max="100" value="50" oninput="actualizarFiltros()">
-                <button class="sub-math-btn" onclick="ajustarSlider('slider-brillo', 10)"><span class="material-symbols-outlined" style="font-size: 16px;">add</span></button>
+                <button class="sub-math-btn" onclick="ajustarSlider('slider-brillo', -5)" aria-label="Disminuir brillo"><span class="material-symbols-outlined" aria-hidden="true" style="font-size: 16px;">remove</span></button>
+                <input type="range" id="slider-brillo" min="0" max="100" step="5" value="50" oninput="actualizarValorFiltro('slider-brillo', this.value)" aria-labelledby="label-brillo" aria-valuetext="Estándar">
+                <button class="sub-math-btn" onclick="ajustarSlider('slider-brillo', 5)" aria-label="Aumentar brillo"><span class="material-symbols-outlined" aria-hidden="true" style="font-size: 16px;">add</span></button>
             </div>
         </div>
         <div class="sub-setting-row">
-            <div class="sub-item-text"><h3>Saturación</h3><p>Intensidad de color</p></div>
+            <div class="sub-item-text"><h3 id="label-saturacion">Saturación</h3><p>Intensidad de color: <output id="valor-saturacion" for="slider-saturacion">Estándar</output></p></div>
             <div class="sub-slider-control">
-                <button class="sub-math-btn" onclick="ajustarSlider('slider-saturacion', -10)"><span class="material-symbols-outlined" style="font-size: 16px;">remove</span></button>
-                <input type="range" id="slider-saturacion" min="0" max="100" value="40" oninput="actualizarFiltros()">
-                <button class="sub-math-btn" onclick="ajustarSlider('slider-saturacion', 10)"><span class="material-symbols-outlined" style="font-size: 16px;">add</span></button>
+                <button class="sub-math-btn" onclick="ajustarSlider('slider-saturacion', -10)" aria-label="Disminuir saturación"><span class="material-symbols-outlined" aria-hidden="true" style="font-size: 16px;">remove</span></button>
+                <input type="range" id="slider-saturacion" min="0" max="100" step="10" value="50" oninput="actualizarValorFiltro('slider-saturacion', this.value)" aria-labelledby="label-saturacion" aria-valuetext="Estándar">
+                <button class="sub-math-btn" onclick="ajustarSlider('slider-saturacion', 10)" aria-label="Aumentar saturación"><span class="material-symbols-outlined" aria-hidden="true" style="font-size: 16px;">add</span></button>
             </div>
         </div>
         <div class="sub-setting-row sub-toggle-item">
