@@ -1,3 +1,43 @@
+Abrir faro con teclado
+Alt+F
+
+Salir
+Esc
+
+apretar boton
+enter 
+o 
+barra
+
+recorrer
+tab >
+< shift tab
+
+
+-----------------------------------------------------------
+as haría en este orden:
+
+✅ Cambiar los div interactivos por <button> donde sea posible.
+✅ Agregar Escape para cerrar el panel.
+✅ Enfocar automáticamente el primer control al abrir.
+✅ Devolver el foco al botón flotante al cerrar.
+✅ Implementar el focus trap para que Tab no salga del panel.
+✅ Agregar un atajo global como Alt + F.
+✅ Completar los atributos ARIA dinámicos (aria-expanded, aria-hidden) y anuncios con aria-live
+
+
+
+
+
+
+
+
+
+
+
+
+
+----------------------------------------------------
 -Antes de instalar el plugin
 habilitar servicio web
 el que sigue

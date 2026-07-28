@@ -138,19 +138,24 @@ function ocultarSubmenus() {
 
     SUBMENUS.forEach(id => {
 
-        const el = document.getElementById(id);
+        const submenu = document.getElementById(id);
 
-        if (el) {
-            el.style.display = "none";
+        if (!submenu) {
+            return;
         }
+
+        submenu.style.display = "none";
+        submenu.setAttribute("aria-hidden", "true");
 
     });
 
 }
 
+
 function toggleMenu() {
 
     const menu = document.getElementById("menuAccesibilidad");
+    const btnFlotante = document.getElementById("btnFlotante");
 
     let algunSubmenuAbierto = false;
 
@@ -167,27 +172,91 @@ function toggleMenu() {
     if (menu.style.display === "flex" || algunSubmenuAbierto) {
 
         menu.style.display = "none";
+        menu.setAttribute("aria-hidden", "true");
 
         ocultarSubmenus();
+
+        btnFlotante.setAttribute("aria-expanded", "false");
+
+        btnFlotante.focus();
 
     } else {
 
         menu.style.display = "flex";
+        menu.setAttribute("aria-hidden", "false");
+
+        btnFlotante.setAttribute("aria-expanded", "true");
+
+        setTimeout(() => {
+
+            menu.querySelector("button")?.focus();
+
+        }, 50);
 
     }
 
 }
 
+let ultimoBotonMenu = null;
+
 function abrirSubmenu(idSubmenu) {
+
+    // Guarda el botón desde el que se abrió
+    ultimoBotonMenu = document.activeElement;
+
+    document.getElementById("menuAccesibilidad").style.display = "none";
+    document.getElementById("menuAccesibilidad")
+        .setAttribute("aria-hidden", "true");
 
     ocultarSubmenus();
 
-    document.getElementById("menuAccesibilidad").style.display = "none";
+    const submenu = document.getElementById(idSubmenu);
 
-    document.getElementById(idSubmenu).style.display = "block";
+    if (!submenu) {
+        return;
+    }
+
+    submenu.style.display = "block";
+    submenu.setAttribute("aria-hidden", "false");
+
+    // Llevar el foco al primer control del submenú
+    setTimeout(() => {
+
+        submenu.querySelector(
+            'button, input, select, textarea, [tabindex]:not([tabindex="-1"])'
+        )?.focus();
+
+    }, 50);
 
 }
-function volverAlMenu() { ocultarSubmenus(); document.getElementById("menuAccesibilidad").style.display = "flex"; }
+
+function volverAlMenu() {
+
+    ocultarSubmenus();
+
+    const menu = document.getElementById("menuAccesibilidad");
+
+    menu.style.display = "flex";
+    menu.setAttribute("aria-hidden", "false");
+
+    setTimeout(() => {
+
+        if (ultimoBotonMenu) {
+
+            ultimoBotonMenu.focus();
+
+        } else {
+
+            menu.querySelector(
+                'button, [role="button"]'
+            )?.focus();
+
+        }
+
+    }, 50);
+
+}
+
 function cerrarTodo(){
 
     ocultarSubmenus();
@@ -199,6 +268,7 @@ function cerrarTodo(){
         menu.style.display="none";
 
 }
+
 function empezarFaro(){
 
     marcarTourComoVisto();
@@ -751,6 +821,76 @@ async function registrarEvento(tipo, datos = {}) {
 
 }
 
+function activarFocusTrap(root){
+
+    root.addEventListener("keydown", function(e){
+
+        if(e.key !== "Tab"){
+            return;
+        }
+
+        let panelActivo = document.getElementById("menuAccesibilidad");
+
+        if(panelActivo.style.display !== "flex"){
+
+            panelActivo = null;
+
+            SUBMENUS.forEach(id=>{
+
+                const el = document.getElementById(id);
+
+                if(el && el.style.display === "block"){
+                    panelActivo = el;
+                }
+
+            });
+
+        }
+
+        if(!panelActivo){
+            return;
+        }
+
+        const focusables = panelActivo.querySelectorAll(
+            'button, a, input, select, textarea, [tabindex]:not([tabindex="-1"])'
+        );
+
+        if(!focusables.length){
+            return;
+        }
+
+        const primero = focusables[0];
+        const ultimo = focusables[focusables.length-1];
+
+        if(e.shiftKey){
+
+            if(document.activeElement === primero){
+
+                e.preventDefault();
+                ultimo.focus();
+
+            }
+
+        }else{
+
+            if(document.activeElement === ultimo){
+
+                e.preventDefault();
+                primero.focus();
+
+                primero.scrollIntoView({
+                    block: "nearest",
+                    behavior: "smooth"
+                });
+
+            }
+
+        }
+
+    });
+
+}
+
 function restablecerAjustes() {
 
     // Reset al estado lógico base
@@ -855,6 +995,10 @@ function aplicarPerfil(perfil) {
             break;
     }
     aplicarEstado();
+    document
+        .getElementById("faro-anunciador")
+        .textContent =
+        "Perfil Visibilidad activado";
 
     sincronizarControles();
 
@@ -1433,6 +1577,7 @@ async function iniciarFaro() {
         });
 
     }
+    activarFocusTrap(document.getElementById("faro-extension-root"));
 
 }
 
@@ -1467,6 +1612,48 @@ window.faroState = faroState;
 window.guardarPreferenciasBackend = guardarPreferenciasBackend;
 window.registrarEvento = registrarEvento;
 window.obtenerConfiguracion = obtenerConfiguracion;
+
+
+document.addEventListener("keydown", (e)=>{
+
+    if(e.altKey && e.key.toLowerCase() === "f"){
+
+        e.preventDefault();
+
+        toggleMenu();
+
+    }
+
+});
+document.addEventListener("keydown",(e)=>{
+
+    if(e.key==="Escape"){
+
+        cerrarTodo();
+
+    }
+
+});
+document.addEventListener("keydown",(e)=>{
+
+    if(
+
+        (e.key==="Enter" || e.key===" ")
+
+        &&
+
+        e.target.matches("[role='button']")
+
+    ){
+
+        e.preventDefault();
+
+        e.target.click();
+
+    }
+
+});
+
 
 
 return {

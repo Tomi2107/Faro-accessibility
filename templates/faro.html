@@ -3,374 +3,10 @@
 <!-- Importación de Roboto Mono -->
 <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 
-<style>
-    /* ==========================================================================
-       VARIABLES CSS DE FARO
-       ========================================================================== */
-
-:root {
-    /* Paleta Material Design 3 y Accesibilidad (Contraste 4.5:1 mínimo) */
-    --faro-primary: #004B94;         /* Azul cobalto (Interacciones) */
-    --faro-hover: #003366;           /* Azul marino (Hover y estados activos) */
-    --faro-accent: #003366;          /* Azul marino para foco o bordes */
-    --faro-bg-card: #FFFFFF;         /* Blanco puro para fondos de menú */
-    --faro-bg-item: #F5F8FA;         /* Tono pastel muy suave para elementos */
-    --faro-bg-item-hover: #E9F0F5;   /* Tono intermedio para hover de elementos */
-    --faro-border: #D1DCE5;          /* Gris/Azul muy suave para divisiones */
-    --faro-text: #1A1A1A;            /* Gris muy oscuro para texto principal */
-    --faro-muted: #545454;           /* Gris medio para texto secundario */
-}
-
-    /* ==========================================================================
-       ESTILOS DEL WIDGET FARO Y CONTROLES DE VOZ
-       ========================================================================== */
-    #faro-extension-root,
-    #faro-extension-root button,
-    #faro-extension-root input,
-    #faro-extension-root select {
-        font-family: 'Roboto Mono', monospace;
-        color: var(--faro-text);
-        box-sizing: border-box;
-    }
-
-    #faro-extension-root .material-symbols-outlined {
-        font-family: 'Material Symbols Outlined', sans-serif !important;
-        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-        vertical-align: middle;
-    }
-
-
-/* ---------------------------------------------------
-    Controles de Voz Flotantes (Centro Inferior)
---------------------------------------------------- */
-.faro-voice-controls {
-    position: fixed !important; bottom: 30px !important; left: 50% !important; transform: translateX(-50%) !important;
-    background: var(--faro-primary); border: 2px solid var(--faro-bg-card); border-radius: 30px; padding: 10px 20px;
-    display: none; gap: 15px; align-items: center; box-shadow: 0 4px 15px rgba(0,0,0,0.3); z-index: 100005 !important;
-}
-.faro-voice-controls.active { display: flex; animation: slideUpFade 0.3s ease-out; }
-@keyframes slideUpFade { from { opacity: 0; transform: translate(-50%, 20px); } to { opacity: 1; transform: translate(-50%, 0); } }
-.faro-voice-controls button { background: transparent; border: none; color: var(--faro-bg-card); cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 5px; border-radius: 50%; transition: 0.2s; }
-.faro-voice-controls button:hover, .faro-voice-controls button:focus-visible { background: var(--faro-hover); outline: 2px solid var(--faro-bg-item); outline-offset: 2px; }
-.faro-voice-controls .material-symbols-outlined { font-size: 32px; }
-
-/* ---------------------------------------------------
-   Alineación Global de Fuente y Textos
---------------------------------------------------- */
-#faro-extension-root,
-#faro-extension-root button,
-#faro-extension-root input,
-#faro-extension-root select {
-    font-family: 'Roboto Mono', monospace;
-    color: var(--faro-text);
-    box-sizing: border-box;
-}
-
-/* Protección de la fuente para los Iconos */
-#faro-extension-root .material-symbols-outlined {
-    font-family: 'Material Symbols Outlined', sans-serif !important;
-    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-    vertical-align: middle;
-}
-
-/* ---------------------------------------------------
-   Botón Flotante y Onboarding
---------------------------------------------------- */
-.faro-btn {
-    position: fixed !important;
-    bottom: 20px !important;
-    right: 20px !important;
-    width: 60px;
-    height: 60px;
-    border: 3px solid var(--faro-bg-card);
-    border-radius: 50%;
-    background: var(--faro-primary);
-    color: var(--faro-bg-card);
-    font-size: 30px;
-    cursor: pointer;
-    box-shadow: 0 4px 12px rgba(0, 75, 148, 0.4);
-    z-index: 99999 !important;
-    transition: all 0.3s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-.logo { width: 100%; }
-.faro-btn:hover, .faro-btn:focus {
-    background: var(--faro-hover);
-    transform: scale(1.08);
-    outline: 3px solid var(--faro-bg-item);
-    outline-offset: 2px;
-}
-
-#faroMensaje { padding: 0 10px 0 15px; text-align: center; }
-.faro-box {
-    position: fixed !important; bottom: 95px !important; right: 25px !important;
-    width: 310px; min-height: 90px; background: var(--faro-bg-card); color: var(--faro-text);
-    border: 2px solid var(--faro-primary); border-radius: 16px; padding: 20px 16px;
-    display: block; z-index: 99998 !important; box-shadow: 0 8px 20px rgba(0,0,0,0.15);
-}
-.faro-box::after {
-    content: ""; position: absolute; bottom: -10px; right: 25px; width: 16px; height: 16px;
-    background: var(--faro-bg-card); border-right: 2px solid var(--faro-primary);
-    border-bottom: 2px solid var(--faro-primary); transform: rotate(45deg);
-}
-.faro-box h3 { font-size: 16px; font-weight: 700; line-height: 1.3; margin: 0 0 8px 0; color: var(--faro-primary); }
-.faro-box p { font-size: 12px; font-weight: 500; line-height: 1.5; margin: 0 0 16px 0; color: var(--faro-text); }
-.faro-options { display: flex; justify-content: center; }
-.faro-options button {
-    background: var(--faro-primary); border: none; border-radius: 6px; color: var(--faro-bg-card);
-    font-size: 12px; font-weight: bold; padding: 10px 24px; cursor: pointer; transition: 0.2s;
-}
-#faroOptions button {
-    color: var(--faro-bg-card);
-}
-.faro-options button:hover { background: var(--faro-hover); transform: scale(1.05); }
-
-/* ---------------------------------------------------
-   Menú Accesibilidad Principal
---------------------------------------------------- */
-.menu-accesibilidad {
-    position: fixed !important; right: 20px !important; bottom: 90px !important;
-    display: none; flex-direction: column; gap: 10px; z-index: 100000 !important;
-}
-.menu-item {
-    width: 170px; height: 46px; border: 2px solid var(--faro-primary); border-radius: 23px;
-    background: var(--faro-bg-card); color: var(--faro-text); font-size: 12px; font-weight: 700;
-    display: flex; align-items: center; justify-content: flex-start; gap: 12px; padding: 0 16px; 
-    cursor: pointer; box-shadow: 0 4px 8px rgba(0,0,0,0.1); transition: all 0.2s ease;
-}
-.menu-item:hover, .menu-item:focus {
-    background: var(--faro-bg-item); color: var(--faro-primary); transform: translateX(-5px);
-    border-color: var(--faro-hover);
-}
-.menu-item .icono { font-size: 20px; width: 24px; text-align: center; color: var(--faro-primary); }
-
-.btn-restablecer { margin-top: 8px; background: var(--faro-bg-item); border-color: var(--faro-border); }
-.btn-restablecer:hover, .btn-restablecer:focus-visible { background: #FFEBEB; color: #D32F2F; border-color: #D32F2F; }
-.btn-restablecer:hover .icono, .btn-restablecer:focus-visible .icono { color: #D32F2F; }
-
-/* ---------------------------------------------------
-   Contenedor de Submenús y Cabeceras
---------------------------------------------------- */
-.sub-menu-container {
-    position: fixed !important; right: 20px !important; bottom: 90px !important;
-    background-color: var(--faro-bg-card); width: 280px; height: 450px;
-    border: 2px solid var(--faro-primary); border-radius: 12px; padding: 16px;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.2); z-index: 100001 !important;
-    display: none; overflow-y: auto; overflow-x: hidden;
-}
-.sub-menu-container::-webkit-scrollbar { width: 6px; }
-.sub-menu-container::-webkit-scrollbar-thumb { background: var(--faro-primary); border-radius: 4px; }
-
-.sub-menu-header { 
-    display: flex; justify-content: space-between; align-items: center; 
-    margin-bottom: 16px; padding-bottom: 10px; border-bottom: 1px solid var(--faro-border); 
-}
-.sub-menu-header h1 { font-size: 10px; font-weight: 700; color: var(--faro-primary); text-transform: uppercase; letter-spacing: 0.5px; margin: 0; text-align: center; flex: 1; }
-.sub-icon-btn { 
-    background: var(--faro-bg-item); border: 1px solid var(--faro-border); border-radius: 6px; 
-    font-size: 16px; width: 28px; height: 28px; cursor: pointer; color: var(--faro-text); 
-    display: flex; align-items: center; justify-content: center; transition: 0.2s;
-}
-.sub-icon-btn:hover { background: var(--faro-primary); color: var(--faro-bg-card); border-color: var(--faro-hover); }
-
-.sub-sub-header { display: flex; align-items: center; margin-bottom: 16px; gap: 8px; color: var(--faro-text); }
-.sub-sub-header h2 { font-size: 12px; font-weight: 700; margin: 0; }
-.sub-sub-header .material-symbols-outlined { font-size: 20px; color: var(--faro-text); }
-
-/* ---------------------------------------------------
-   Listas y Elementos de Navegación
---------------------------------------------------- */
-.menu-list-item { 
-    display: flex; align-items: center; gap: 12px; padding: 12px 8px; 
-    border-bottom: 1px solid var(--faro-border); cursor: pointer; 
-    transition: background-color 0.2s ease, border-radius 0.2s; 
-}
-.menu-list-item:last-child { border-bottom: none; }
-.menu-list-item:hover { background-color: var(--faro-bg-item-hover); border-radius: 8px; }
-.menu-list-icon { font-size: 20px; color: var(--faro-primary); display: flex; align-items: center; justify-content: center; width: 24px; }
-.menu-list-text { display: flex; flex-direction: column; justify-content: center; }
-.menu-list-text h3 { font-size: 11px; font-weight: 700; color: var(--faro-text); margin: 0 0 4px 0; }
-.menu-list-text p { font-size: 9px; color: var(--faro-muted); margin: 0; line-height: 1.2; }
-
-/* ---------------------------------------------------
-   Controles Internos (Filas y Ajustes)
---------------------------------------------------- */
-.sub-section-title { font-size: 10px; font-weight: 700; color: var(--faro-muted); text-transform: uppercase; margin-bottom: 10px; letter-spacing: 0.5px; }
-.sub-setting-row { margin-bottom: 12px; background: var(--faro-bg-item); padding: 10px 12px; border-radius: 8px; border: 1px solid transparent; transition: 0.2s; }
-.sub-setting-row:hover { border-color: var(--faro-border); }
-.sub-item-text h3 { font-size: 11px; font-weight: 700; margin: 0 0 4px 0; color: var(--faro-text); }
-.sub-item-text p { font-size: 9px; color: var(--faro-muted); margin: 0; line-height: 1.3; }
-.sub-toggle-item { display: flex; justify-content: space-between; align-items: center; }
-.sub-toggle-item .sub-item-text { padding-right: 10px; }
-
-/* Sliders Math Buttons */
-.sub-slider-control { display: flex; align-items: center; margin-top: 10px; gap: 8px; }
-.sub-math-btn { 
-    background: var(--faro-bg-card); border: 1px solid var(--faro-border); border-radius: 4px; 
-    font-size: 16px; font-weight: bold; color: var(--faro-primary); cursor: pointer; 
-    width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; transition: 0.2s;
-}
-.sub-math-btn:hover { background: var(--faro-primary); color: var(--faro-bg-card); }
-.sub-math-btn:focus-visible { outline: 2px solid var(--faro-primary); outline-offset: 2px; }
-
-/* ---------------------------------------------------
-   Controles Especiales de Texto (Pills)
---------------------------------------------------- */
-.text-option-group { display: flex; gap: 8px; margin-top: 10px; margin-bottom: 16px; }
-.size-pill, .align-pill { 
-    flex: 1; background: var(--faro-bg-item); border: 2px solid transparent; border-radius: 12px; 
-    padding: 10px 4px; display: flex; flex-direction: column; align-items: center; justify-content: center; 
-    cursor: pointer; transition: all 0.2s ease; box-shadow: 0 1px 3px rgba(0,0,0,0.05); text-align: center;
-}
-.size-pill:hover, .align-pill:hover { background: var(--faro-bg-item-hover); }
-.size-pill.active, .align-pill.active { border-color: var(--faro-primary); background: var(--faro-bg-card); box-shadow: 0 2px 5px rgba(0,0,0,0.1); color: var(--faro-primary); }
-
-.size-pill .preview-aa { font-weight: bold; display: block; color: inherit; line-height: 1;}
-.size-pill.active .preview-aa { color: var(--faro-primary); }
-.size-pill:not(.active) .preview-aa { color: var(--faro-text); }
-.size-pill.small .preview-aa { font-size: 12px; }
-.size-pill.normal .preview-aa { font-size: 15px; }
-.size-pill.large .preview-aa { font-size: 18px; }
-.size-pill span:last-child { font-size: 9px; color: var(--faro-muted); display: block; margin-top: 6px; }
-.size-pill.active span:last-child { color: var(--faro-primary); }
-
-.align-icon { font-size: 22px; color: var(--faro-text); }
-.align-pill.active .align-icon { color: var(--faro-primary); }
-
-/* Input Select Alineado */
-.faro-select {
-    width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--faro-border); 
-    background: var(--faro-bg-card); font-size: 10px; color: var(--faro-text); 
-    font-weight: 600; cursor: pointer; outline: none; transition: border-color 0.2s;
-}
-.faro-select:focus { border-color: var(--faro-primary); }
-
-/* ---------------------------------------------------
-   Inputs Range (Sliders) y Toggles (Switches)
---------------------------------------------------- */
-.sub-menu-container input[type=range] { -webkit-appearance: none; appearance: none; width: 100%; background: transparent; }
-.sub-menu-container input[type=range]:focus-visible { outline: 2px solid var(--faro-primary); outline-offset: 3px; border-radius: 2px; }
-.sub-menu-container input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; height: 16px; width: 16px; border-radius: 50%; background: var(--faro-primary); border: 2px solid var(--faro-bg-card); box-shadow: 0 0 2px rgba(0,0,0,0.5); cursor: pointer; margin-top: -6px; }
-.sub-menu-container input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 4px; cursor: pointer; background: var(--faro-border); border-radius: 2px; }
-
-.sub-switch { position: relative; display: inline-block; width: 34px; height: 20px; flex-shrink: 0; }
-.sub-switch input { opacity: 0; width: 0; height: 0; }
-.sub-switch input:focus-visible + .sub-slider { outline: 2px solid var(--faro-primary); outline-offset: 2px; }
-.sub-switch .sub-slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--faro-border); border: 1px solid #B0C4D4; transition: .3s; }
-.sub-switch .sub-slider:before { position: absolute; content: ""; height: 14px; width: 14px; left: 2px; bottom: 2px; background-color: var(--faro-bg-card); transition: .3s; box-shadow: 0 1px 3px rgba(0,0,0,0.3); }
-.sub-switch input:checked + .sub-slider { background-color: var(--faro-primary); border-color: var(--faro-hover); }
-.sub-switch input:checked + .sub-slider:before { transform: translateX(14px); }
-.sub-slider.sub-round { border-radius: 20px; }
-.sub-slider.sub-round:before { border-radius: 50%; }
-
-/* ---------------------------------------------------
-   NUEVO GRID DE PERFILES M3 (Alineado a Izquierda)
---------------------------------------------------- */
-.perfiles-grid { 
-    display: grid; 
-    grid-template-columns: 1fr 1fr; 
-    gap: 10px; 
-    margin-bottom: 12px; 
-}
-
-.perfil-card { 
-    background-color: var(--faro-bg-item); 
-    border-radius: 12px; 
-    padding: 14px 12px; 
-    cursor: pointer; 
-    transition: 0.2s; 
-    border: 1px solid transparent; 
-    display: flex; 
-    flex-direction: column; 
-    align-items: flex-start; 
-    text-align: left; 
-}
-
-.perfil-card:hover { 
-    background-color: var(--faro-bg-item-hover); 
-    border-color: var(--faro-border); 
-    transform: translateY(-2px); 
-}
-
-.perfil-icon { 
-    font-size: 22px; 
-    margin-bottom: 12px; 
-    color: var(--faro-text); 
-}
-
-.perfil-card h3 { 
-    font-size: 10px; 
-    font-weight: 700; 
-    color: var(--faro-text); 
-    margin-bottom: 4px; 
-    line-height: 1.2;
-}
-
-.perfil-card p { 
-    font-size: 8.5px; 
-    color: var(--faro-muted); 
-    line-height: 1.3; 
-    margin: 0; 
-}
-
-/* Tarjeta Inferior "Personaliza tu perfil" */
-.perfil-card-full { 
-    display: flex; 
-    align-items: center; 
-    background-color: var(--faro-bg-card); 
-    border: 1px solid var(--faro-border); 
-    border-radius: 12px; 
-    padding: 16px 14px; 
-    cursor: pointer; 
-    gap: 14px; 
-    transition: 0.2s; 
-}
-
-.perfil-card-full:hover { 
-    background-color: var(--faro-bg-item-hover); 
-    border-color: var(--faro-text); 
-}
-
-.perfil-card-full .perfil-icon { 
-    margin-bottom: 0; 
-    color: var(--faro-text); 
-    font-size: 24px; 
-}
-
-.perfil-full-text { 
-    flex: 1; 
-}
-
-.perfil-full-text h3 { 
-    font-size: 11px; 
-    font-weight: 700; 
-    color: var(--faro-text); 
-    margin: 0 0 4px 0; 
-}
-
-.perfil-full-text p { 
-    font-size: 9px; 
-    color: var(--faro-text); 
-    line-height: 1.3; 
-    margin: 0; 
-}
-
-.perfil-chevron { 
-    font-size: 20px; 
-    font-weight: bold; 
-    color: var(--faro-text); 
-}
-body.faro-font-dyslexic,
-body.faro-font-dyslexic *:not(#faro-extension-root *) {
-    font-family:'Open Dyslexic', Arial, sans-serif !important;
-}
-</style>
 <!-- ==========================================================================
-     WIDGET DE ACCESIBILIDAD FARO (ESTRUCTURA HTML)
+     WIDGET DE ACCESIBILIDAD FARO (ESTRUCTURA HTML) revisar <link href="amd/src/styles.css" rel="stylesheet">
      ========================================================================== -->
-
+<link rel="stylesheet" href="/local/accesspanel/styles.css">
 <div id="faro-extension-root" style="visibility:hidden;">
     
     <!-- Controles Flotantes para la Voz -->
@@ -383,7 +19,7 @@ body.faro-font-dyslexic *:not(#faro-extension-root *) {
         </button>
     </div>
 
-    <div class="faro-box" id="faroBox" role="dialog" aria-labelledby="faroTitle" aria-describedby="faroDesc">
+    <div class="faro-box" id="faroBox" role="dialog" aria-modal="true" aria-labelledby="faroTitle" aria-describedby="faroDesc">
         <div id="faroMensaje">
             <h3 id="faroTitle">¡Hola, soy FARO!</h3>
             <p id="faroDesc">Estoy aquí para ayudarte a usar el campus<br>de forma más accesible.</p>
@@ -393,7 +29,7 @@ body.faro-font-dyslexic *:not(#faro-extension-root *) {
         </div>
     </div>
 
-    <nav class="menu-accesibilidad" id="menuAccesibilidad" aria-label="Menú principal de accesibilidad">
+    <nav class="menu-accesibilidad" id="menuAccesibilidad" aria-label="Menú principal de accesibilidad" aria-hidden="true">
         <button class="menu-item" onclick="abrirSubmenu('submenuPerfil')"><span class="icono material-symbols-outlined" aria-hidden="true">person</span>Mi Perfil</button>
         <button class="menu-item" onclick="abrirSubmenu('submenuLectura')"><span class="icono material-symbols-outlined" aria-hidden="true">menu_book</span>Lectura</button>
         <button class="menu-item" onclick="abrirSubmenu('submenuApariencia')"><span class="icono material-symbols-outlined" aria-hidden="true">contrast</span>Apariencia</button>
@@ -409,29 +45,29 @@ body.faro-font-dyslexic *:not(#faro-extension-root *) {
     <div id="faro-anunciador" aria-live="polite" style="position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(1px,1px,1px,1px);"></div>
 
     <!-- Menú Apariencia -->
-    <div class="sub-menu-container" id="submenuApariencia">
+    <div class="sub-menu-container" id="submenuApariencia" aria-hidden="true">
         <header class="sub-menu-header">
             <button class="sub-icon-btn" onclick="volverAlMenu()" aria-label="Volver"><span class="material-symbols-outlined">arrow_back</span></button>
             <h1>Menú de accesibilidad</h1>
             <button class="sub-icon-btn" onclick="cerrarTodo()" aria-label="Cerrar"><span class="material-symbols-outlined">close</span></button>
         </header>
         <div class="sub-sub-header"><span class="material-symbols-outlined">contrast</span><h2>Apariencia</h2></div>
-        <div class="menu-list-item" onclick="abrirSubmenu('submenuTexto')">
+        <div class="menu-list-item" onclick="abrirSubmenu('submenuTexto')"  tabindex="0" role="button" aria-label="Abrir menu texto">
             <div class="menu-list-icon"><span class="material-symbols-outlined">text_fields</span></div>
             <div class="menu-list-text"><h3>Texto</h3><p>Ajusta la diferencia entre el texto y el fondo</p></div>
         </div>
-        <div class="menu-list-item" onclick="abrirSubmenu('submenuAjustesVisuales')">
+        <div class="menu-list-item" onclick="abrirSubmenu('submenuAjustesVisuales')" tabindex="0" role="button" aria-label="Abrir menu de ajustes visuales">
             <div class="menu-list-icon"><span class="material-symbols-outlined">display_settings</span></div>
             <div class="menu-list-text"><h3>Ajustes Visuales</h3><p>Ajusta la diferencia entre el texto y el fondo</p></div>
         </div>
-        <div class="menu-list-item" onclick="abrirSubmenu('submenuTecladoVirtual')">
+        <div class="menu-list-item" onclick="abrirSubmenu('submenuTecladoVirtual')"  tabindex="0" role="button" aria-label="Abrir teclado virtual">
             <div class="menu-list-icon"><span class="material-symbols-outlined">keyboard</span></div>
             <div class="menu-list-text"><h3>Teclado Virtual</h3><p>Ajusta la diferencia entre el texto y el fondo</p></div>
         </div>
     </div>
 
     <!-- Menú de Texto -->
-    <div class="sub-menu-container" id="submenuTexto">
+    <div class="sub-menu-container" id="submenuTexto"  aria-hidden="true"> 
         <header class="sub-menu-header">
             <button class="sub-icon-btn" onclick="abrirSubmenu('submenuApariencia')" aria-label="Volver"><span class="material-symbols-outlined">arrow_back</span></button>
             <h1 style="text-transform: none;">Apariencia</h1>
@@ -454,22 +90,22 @@ body.faro-font-dyslexic *:not(#faro-extension-root *) {
             <h3 style="font-size: 11px; font-weight: 700; margin: 0 0 4px 0; color: var(--faro-text);">Tamaño de texto</h3>
             <p style="font-size: 9px; color: var(--faro-muted); margin: 0; line-height: 1.3;">Aumenta o reduce el tamaño del texto.</p>
             <div class="text-option-group">
-                <div class="size-pill small" onclick="seleccionarTamano(this, 'small')"><span class="preview-aa">Aa</span><span>Pequeño</span></div>
-                <div class="size-pill normal active" onclick="seleccionarTamano(this, 'normal')"><span class="preview-aa">Aa</span><span>Normal</span></div>
-                <div class="size-pill large" onclick="seleccionarTamano(this, 'large')"><span class="preview-aa">Aa</span><span>Grande</span></div>
+                <div class="size-pill small" tabindex="0" role="button" onclick="seleccionarTamano(this, 'small')"><span class="preview-aa">Aa</span><span>Pequeño</span></div>
+                <div class="size-pill normal active" tabindex="0" role="button" onclick="seleccionarTamano(this, 'normal')"><span class="preview-aa">Aa</span><span>Normal</span></div>
+                <div class="size-pill large" tabindex="0" role="button" onclick="seleccionarTamano(this, 'large')"><span class="preview-aa">Aa</span><span>Grande</span></div>
             </div>
         </div>
 
         <div style="margin-bottom: 20px;">
             <h3 style="font-size: 11px; font-weight: 700; margin: 0 0 4px 0; color: var(--faro-text);">Alineación de texto</h3>
             <div class="text-option-group">
-                <div class="align-pill active" onclick="seleccionarAlineacion(this, 'left')">
+                <div class="align-pill active" tabindex="0" role="button" onclick="seleccionarAlineacion(this, 'left')">
                     <span class="align-icon material-symbols-outlined">format_align_left</span>
                 </div>
-                <div class="align-pill" onclick="seleccionarAlineacion(this, 'center')">
+                <div class="align-pill" tabindex="0" role="button" onclick="seleccionarAlineacion(this, 'center')">
                     <span class="align-icon material-symbols-outlined">format_align_center</span>
                 </div>
-                <div class="align-pill" onclick="seleccionarAlineacion(this, 'right')">
+                <div class="align-pill" tabindex="0" role="button" onclick="seleccionarAlineacion(this, 'right')">
                     <span class="align-icon material-symbols-outlined">format_align_right</span>
                 </div>
             </div>
@@ -477,7 +113,7 @@ body.faro-font-dyslexic *:not(#faro-extension-root *) {
     </div>
 
     <!-- Submenú de Ajustes Visuales -->
-    <div class="sub-menu-container" id="submenuAjustesVisuales">
+    <div class="sub-menu-container" id="submenuAjustesVisuales"  aria-hidden="true">
         <header class="sub-menu-header">
             <button class="sub-icon-btn" onclick="abrirSubmenu('submenuApariencia')" aria-label="Volver"><span class="material-symbols-outlined">arrow_back</span></button>
             <h1>Menú de accesibilidad</h1>
@@ -497,6 +133,8 @@ body.faro-font-dyslexic *:not(#faro-extension-root *) {
         <div class="sub-setting-row sub-toggle-item">
             <div class="sub-item-text"><h3 id="label-high-contrast">Contraste inteligente</h3><p>Optimiza automáticamente</p></div>
             <label class="sub-switch"><input type="checkbox" id="check-high-contrast" onchange="toggleClase(this, 'faro-high-contrast')" aria-labelledby="label-high-contrast"><span class="sub-slider sub-round" aria-hidden="true"></span></label>
+            <div class="sub-item-text"><h3>Contraste inteligente</h3><p>Optimiza automáticamente</p></div>
+            <label class="sub-switch"><input type="checkbox" id="check-high-contrast" onchange="toggleClase(this, 'faro-high-contrast')"  tabindex="0" role="button" aria-label="Usar contraste inteligente"><span class="sub-slider sub-round"></span></label>
         </div>
         <div class="sub-setting-row">
             <div class="sub-item-text"><h3 id="label-brillo">Brillo</h3><p>Nivel de luz: <output id="valor-brillo" for="slider-brillo">Estándar</output></p></div>
@@ -515,17 +153,17 @@ body.faro-font-dyslexic *:not(#faro-extension-root *) {
             </div>
         </div>
         <div class="sub-setting-row sub-toggle-item">
-            <div class="sub-item-text"><h3 id="label-grayscale">Escala de grises</h3><p>Blanco y negro</p></div>
-            <label class="sub-switch"><input type="checkbox" id="check-grayscale" onchange="toggleFiltroFijo('grayscale')" aria-labelledby="label-grayscale"><span class="sub-slider sub-round" aria-hidden="true"></span></label>
+            <div class="sub-item-text"><h3>Escala de grises</h3><p>Blanco y negro</p></div>
+            <label class="sub-switch"><input type="checkbox" id="check-grayscale" onchange="toggleFiltroFijo('grayscale')"  tabindex="0" role="button" aria-label="Usar escala de grises"><span class="sub-slider sub-round"></span></label>
         </div>
         <div class="sub-setting-row sub-toggle-item">
-            <div class="sub-item-text"><h3 id="label-dark-mode">Modo oscuro</h3><p>Fondos sin brillo</p></div>
-            <label class="sub-switch"><input type="checkbox" id="check-dark-mode" onchange="toggleClase(this, 'faro-dark-mode')" aria-labelledby="label-dark-mode"><span class="sub-slider sub-round" aria-hidden="true"></span></label>
+            <div class="sub-item-text"><h3>Modo oscuro</h3><p>Fondos sin brillo</p></div>
+            <label class="sub-switch"><input type="checkbox" id="check-dark-mode" onchange="toggleClase(this, 'faro-dark-mode')"  tabindex="0" role="button" aria-label="Usar modo oscuro"><span class="sub-slider sub-round"></span></label>
         </div>
     </div>
 
     <!-- Teclado Virtual Placeholder -->
-    <div class="sub-menu-container" id="submenuTecladoVirtual">
+    <div class="sub-menu-container" id="submenuTecladoVirtual"  aria-hidden="true">
         <header class="sub-menu-header">
             <button class="sub-icon-btn" onclick="abrirSubmenu('submenuApariencia')" aria-label="Volver"><span class="material-symbols-outlined">arrow_back</span></button>
             <h1>Menú de accesibilidad</h1>
@@ -538,7 +176,7 @@ body.faro-font-dyslexic *:not(#faro-extension-root *) {
     </div>
 
     <!-- Lectura -->
-    <div class="sub-menu-container" id="submenuLectura">
+    <div class="sub-menu-container" id="submenuLectura"  aria-hidden="true">
         <header class="sub-menu-header">
             <button class="sub-icon-btn" onclick="volverAlMenu()" aria-label="Volver"><span class="material-symbols-outlined">arrow_back</span></button>
             <h1>Menú de accesibilidad</h1>
@@ -553,7 +191,7 @@ body.faro-font-dyslexic *:not(#faro-extension-root *) {
             </div>
             <div style="background: var(--faro-bg-card); border: 1px solid var(--faro-border); border-radius: 8px; padding: 10px 12px; display: flex; justify-content: space-between; align-items: center;">
                 <span style="font-size: 10px; font-weight: 700; color: var(--faro-primary);">Usar asistencia</span>
-                <label class="sub-switch"><input type="checkbox" id="check-voice" onchange="faroState.voz = this.checked; guardarPreferenciasBackend();"><span class="sub-slider sub-round"></span></label>
+                <label class="sub-switch"><input type="checkbox" id="check-voice" onchange="faroState.voz = this.checked; guardarPreferenciasBackend();" tabindex="0" role="button" aria-label="Usar Asistente"><span class="sub-slider sub-round"></span></label>
             </div>
         </div>
         <div class="sub-setting-row">
@@ -573,7 +211,7 @@ body.faro-font-dyslexic *:not(#faro-extension-root *) {
     </div>
 
     <!-- NUEVO Menú Perfiles M3 (Igual a la imagen) -->
-    <div class="sub-menu-container" id="submenuPerfil">
+    <div class="sub-menu-container" id="submenuPerfil"  aria-hidden="true">
         <header class="sub-menu-header">
             <button class="sub-icon-btn" onclick="volverAlMenu()" aria-label="Volver"><span class="material-symbols-outlined">arrow_back</span></button>
             <h1 style="text-transform: none; font-size: 13px;">Menú de accesibilidad</h1>
@@ -585,39 +223,39 @@ body.faro-font-dyslexic *:not(#faro-extension-root *) {
         </div>
         
         <div class="perfiles-grid">
-            <div class="perfil-card" onclick="aplicarPerfil('color')">
+            <div class="perfil-card" onclick="aplicarPerfil('color')" tabindex="0" role="button" aria-label="Perfil filtros de color">
                 <span class="perfil-icon material-symbols-outlined">invert_colors</span>
                 <h3>Filtros de Color</h3>
                 <p>Adaptación de colores</p>
             </div>
-            <div class="perfil-card" onclick="aplicarPerfil('voz')">
+            <div class="perfil-card" onclick="aplicarPerfil('voz')" tabindex="0" role="button" aria-label="Perfil asistente por voz">
                 <span class="perfil-icon material-symbols-outlined">visibility_off</span>
                 <h3>Asistente por Voz</h3>
                 <p>Apoyo para la navegación</p>
             </div>
-            <div class="perfil-card" onclick="aplicarPerfil('fuentes')">
+            <div class="perfil-card" onclick="aplicarPerfil('fuentes')" tabindex="0" role="button" aria-label="Perfil fuentes legibles">
                 <span class="perfil-icon material-symbols-outlined">format_size</span>
                 <h3>Fuentes legibles</h3>
                 <p>Mayor contraste de texto</p>
             </div>
-            <div class="perfil-card" onclick="aplicarPerfil('seguridad')">
+            <div class="perfil-card" onclick="aplicarPerfil('seguridad')" tabindex="0" role="button" aria-label="Perfil seguridad">
                 <span class="perfil-icon material-symbols-outlined">ssid_chart</span>
                 <h3>Seguridad Visual</h3>
                 <p>Reduce estímulos visuales</p>
             </div>
-            <div class="perfil-card" onclick="aplicarPerfil('visibilidad')">
+            <div class="perfil-card" onclick="aplicarPerfil('visibilidad')" tabindex="0" role="button" aria-label="Perfil visibilidad">
                 <span class="perfil-icon material-symbols-outlined">visibility</span>
                 <h3>Visibilidad</h3>
                 <p>Optimiza la claridad</p>
             </div>
-            <div class="perfil-card" onclick="aplicarPerfil('enfoque')">
+            <div class="perfil-card" onclick="aplicarPerfil('enfoque')" tabindex="0" role="button" aria-label="Perfil enfoque">
                 <span class="perfil-icon material-symbols-outlined">center_focus_strong</span>
                 <h3>Enfoque</h3>
                 <p>Reduce distracciones</p>
             </div>
         </div>
         
-        <div class="perfil-card-full" onclick="abrirSubmenu('submenuAjustesVisuales')">
+        <div class="perfil-card-full" onclick="abrirSubmenu('submenuAjustesVisuales')" tabindex="0" role="button" aria-label="Personalizar perfil">
             <span class="perfil-icon material-symbols-outlined">manage_accounts</span>
             <div class="perfil-full-text">
                 <h3>Personaliza tu perfil</h3>
@@ -628,7 +266,7 @@ body.faro-font-dyslexic *:not(#faro-extension-root *) {
     </div>
 
     <!-- Ajustes Extra -->
-    <div class="sub-menu-container" id="submenuAjustes">
+    <div class="sub-menu-container" id="submenuAjustes"  aria-hidden="true">
         <header class="sub-menu-header">
             <button class="sub-icon-btn" onclick="volverAlMenu()" aria-label="Volver"><span class="material-symbols-outlined">arrow_back</span></button>
             <h1>Menú de accesibilidad</h1>
@@ -638,21 +276,22 @@ body.faro-font-dyslexic *:not(#faro-extension-root *) {
             <div style="display: flex; align-items: center; gap: 8px;"><span class="material-symbols-outlined">settings</span><h2>Ajustes</h2></div>
             <span class="material-symbols-outlined" style="font-size: 20px; font-weight: bold; color: var(--faro-primary); cursor:pointer;">chevron_right</span>
         </div>
-        <div class="sub-setting-row sub-toggle-item" style="cursor: pointer; padding: 12px;" onclick="togglePosicion()">
+        <div class="sub-setting-row sub-toggle-item" style="cursor: pointer; padding: 12px;" onclick="togglePosicion()" tabindex="0" role="button" aria-label="Cambiar posición del botón"
+>
             <div class="sub-item-text"><h3>Posición del ícono</h3><p>Cambiar lado pantalla</p></div>
             <span class="material-symbols-outlined" style="color: var(--faro-muted);">swap_horiz</span>
         </div>
-        <div class="sub-setting-row sub-toggle-item" style="cursor: pointer; padding: 12px;" onclick="alert('Funcionalidad próximamente')">
+        <div class="sub-setting-row sub-toggle-item" style="cursor: pointer; padding: 12px;" onclick="alert('Funcionalidad próximamente')" onclick="togglePosicion()" tabindex="0" role="button" aria-label="Proximamente">
             <div class="sub-item-text"><h3>Tamaño del ícono</h3><p>Escala del botón</p></div>
             <span class="material-symbols-outlined" style="color: var(--faro-muted);">open_in_full</span>
         </div>
-        <div class="sub-setting-row sub-toggle-item" style="cursor: pointer; padding: 12px;" onclick="alert('Funcionalidad próximamente')">
+        <div class="sub-setting-row sub-toggle-item" style="cursor: pointer; padding: 12px;" onclick="alert('Funcionalidad próximamente')" onclick="togglePosicion()" tabindex="0" role="button" aria-label="Proximamente">
             <div class="sub-item-text"><h3>Soporte técnico</h3><p>Centro de ayuda</p></div>
             <span class="material-symbols-outlined" style="color: var(--faro-muted);">help</span>
         </div>
     </div>
 
-    <button class="faro-btn" id="btnFlotante" onclick="toggleMenu()" aria-label="Herramientas de accesibilidad">
+    <button class="faro-btn" id="btnFlotante" onclick="toggleMenu()" tabindex="0" role="button" aria-label="Herramientas de accesibilidad" aria-haspopup="dialog" aria-controls="menuAccesibilidad" aria-expanded="false">
         <img src="/local/accesspanel/source/logo.png" alt="FARO logo" class="logo">
     </button>
 </div>
