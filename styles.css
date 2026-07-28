@@ -124,6 +124,9 @@ select:focus-visible {
     background: var(--faro-primary); border: none; border-radius: 6px; color: var(--faro-bg-card);
     font-size: 12px; font-weight: bold; padding: 10px 24px; cursor: pointer; transition: 0.2s;
 }
+#faroOptions button {
+    color: var(--faro-bg-card);
+}
 .faro-options button:hover { background: var(--faro-hover); transform: scale(1.05); }
 
 /* ---------------------------------------------------
