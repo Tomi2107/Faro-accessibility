@@ -1446,8 +1446,10 @@ async function guardarPreferenciasBackend(){
 
 
             voice_volume:
-                faroState.volumenVoz
+                faroState.volumenVoz,
 
+            profile:
+                faroState.perfil
 
         };
       
@@ -1500,6 +1502,8 @@ async function cargarPreferenciasBackend(){
             faroState.posicionBoton =
                 settings.button_position ?? "right";
 
+            faroState.perfil =
+                settings.profile ?? null;
 
             // Visual
             faroState.altoContraste =
