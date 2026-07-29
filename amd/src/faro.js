@@ -1063,6 +1063,7 @@ function restablecerAjustes() {
     faroState.altoContraste = false;
     faroState.modoOscuro = false;
     faroState.perfil = null;
+    faroState.posicionBoton = "right";
 
     // Detener cualquier lectura
     stopVoice();
@@ -1184,7 +1185,6 @@ function aplicarPerfil(perfil) {
 
 }
 
-// Secuencia de Onboarding del Faro
 // Secuencia de Onboarding del Faro
 
 setTimeout(function() {
@@ -1579,8 +1579,10 @@ async function guardarPreferenciasBackend(){
 
 
             voice_volume:
-                faroState.volumenVoz
+                faroState.volumenVoz,
 
+            profile:
+                faroState.perfil
 
         };
       
@@ -1632,6 +1634,9 @@ async function cargarPreferenciasBackend(){
 
             faroState.posicionBoton =
                 settings.button_position ?? "right";
+
+            faroState.perfil =
+                settings.profile ?? null;
 
 
             // Visual
