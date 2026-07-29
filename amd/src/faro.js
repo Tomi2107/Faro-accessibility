@@ -1,13 +1,7 @@
 define([], function() {
 
-
-/* =========================================
-   ESTADO GLOBAL Y LÓGICA...
 /* =========================================
    ESTADO GLOBAL Y LÓGICA DE APLICACIÓN CSS
-========================================= */
-/* =========================================
-   ESTADO GLOBAL
 ========================================= */
 const FARO_FILTER_DEFAULTS = Object.freeze({
     brillo: 50,
@@ -102,6 +96,11 @@ function tourYaVisto() {
         body.faro-font-sans, body.faro-font-sans *:not(#faro-extension-root *) { font-family: Arial, Helvetica, sans-serif !important; }
         body.faro-font-serif, body.faro-font-serif *:not(#faro-extension-root *) { font-family: "Times New Roman", Times, serif !important; }
         body.faro-font-dyslexic, body.faro-font-dyslexic *:not(#faro-extension-root *) { font-family: "Comic Sans MS", "OpenDyslexic", sans-serif !important; }
+
+        /* Filtros visuales: se aplican al campus sin desplazar el widget fijo FARO. */
+        body.faro-content-filtered > :not(#faro-extension-root):not(script):not(style) {
+            filter: var(--faro-content-filter) !important;
+        }
         
         /* Contraste Inteligente (Alto Contraste) */
         body.faro-high-contrast, body.faro-high-contrast *:not(#faro-extension-root *) { 
@@ -110,7 +109,7 @@ function tourYaVisto() {
         
         /* Modo Oscuro */
         body.faro-dark-mode,
-        body.faro-dark-mode * {
+        body.faro-dark-mode *:not(#faro-extension-root):not(#faro-extension-root *) {
             background-color:#121212 !important;
             color:#e0e0e0 !important;
             border-color:#333 !important;
@@ -259,13 +258,25 @@ function volverAlMenu() {
 
 function cerrarTodo(){
 
-    ocultarSubmenus();
-
     const menu =
         document.getElementById("menuAccesibilidad");
+    const habiaPanelAbierto =
+        menu?.style.display === "flex" ||
+        SUBMENUS.some(id => document.getElementById(id)?.style.display === "block");
 
-    if(menu)
+    ocultarSubmenus();
+
+    if(menu) {
         menu.style.display="none";
+        menu.setAttribute("aria-hidden", "true");
+    }
+
+    const btnFlotante = document.getElementById("btnFlotante");
+
+    if (btnFlotante && habiaPanelAbierto) {
+        btnFlotante.setAttribute("aria-expanded", "false");
+        btnFlotante.focus();
+    }
 
 }
 
@@ -275,7 +286,16 @@ function empezarFaro(){
 
     cerrarFaro();
 
-    document.getElementById("menuAccesibilidad").style.display="flex";
+    const menu = document.getElementById("menuAccesibilidad");
+    const btnFlotante = document.getElementById("btnFlotante");
+
+    menu.style.display="flex";
+    menu.setAttribute("aria-hidden", "false");
+    btnFlotante?.setAttribute("aria-expanded", "true");
+
+    setTimeout(() => {
+        menu.querySelector("button")?.focus();
+    }, 50);
 
 }
 /* =========================================
@@ -469,14 +489,25 @@ function actualizarFiltros(guardar = true) {
     const contraste = faroState.contraste / 50;
     const saturacion = faroState.saturacion / 50;
     const grises = faroState.grises ? 100 : 0;
+    const filtrosActivos =
+        faroState.brillo !== FARO_FILTER_DEFAULTS.brillo ||
+        faroState.contraste !== FARO_FILTER_DEFAULTS.contraste ||
+        faroState.saturacion !== FARO_FILTER_DEFAULTS.saturacion ||
+        faroState.grises !== FARO_FILTER_DEFAULTS.grises;
 
-    document.body.style.filter =
-    `
-    brightness(${brillo})
-    contrast(${contraste})
-    saturate(${saturacion})
-    grayscale(${grises}%)
-    `;
+    // Un filter sobre body desplaza los elementos position: fixed.
+    // Se conserva body sin filtro y se filtra solo el contenido externo a FARO.
+    document.body.style.filter = "";
+    document.body.classList.toggle("faro-content-filtered", filtrosActivos);
+
+    if (filtrosActivos) {
+        document.body.style.setProperty(
+            "--faro-content-filter",
+            `brightness(${brillo}) contrast(${contraste}) saturate(${saturacion}) grayscale(${grises}%)`
+        );
+    } else {
+        document.body.style.removeProperty("--faro-content-filter");
+    }
 
     if(guardar){
         guardarPreferenciasBackend();
@@ -601,6 +632,18 @@ function sincronizarControles(){
         voice.checked = faroState.voz;
     }
 
+    const voiceSpeed = document.getElementById("voice-speed");
+
+    if(voiceSpeed){
+        voiceSpeed.value = faroState.velocidadVoz;
+    }
+
+    const voiceVolume = document.getElementById("voice-volume");
+
+    if(voiceVolume){
+        voiceVolume.value = faroState.volumenVoz;
+    }
+
     // ==========================
     // SELECT FUENTE
     // ==========================
@@ -685,20 +728,48 @@ function actualizarPosicionBoton(){
     LECTOR DE VOZ
 ========================================= */
 function togglePauseResumeVoice() {
-    const icon = document.getElementById('faro-icon-pause-resume'); const btn = document.getElementById('faro-btn-pause-resume');
+    const icon = document.getElementById('faro-icon-pause-resume');
+    const btn = document.getElementById('faro-btn-pause-resume');
+
+    if (!window.speechSynthesis.speaking && !window.speechSynthesis.paused) {
+        return;
+    }
+
     if (window.speechSynthesis.paused) {
-        window.speechSynthesis.resume(); icon.textContent = 'pause'; btn.setAttribute('aria-label', 'Pausar lectura');
+        window.speechSynthesis.resume();
+        if (icon) icon.textContent = 'pause';
+        if (btn) btn.setAttribute('aria-label', 'Pausar lectura');
     } else {
-        window.speechSynthesis.pause(); icon.textContent = 'play_arrow'; btn.setAttribute('aria-label', 'Reanudar lectura');
+        window.speechSynthesis.pause();
+        if (icon) icon.textContent = 'play_arrow';
+        if (btn) btn.setAttribute('aria-label', 'Reanudar lectura');
     }
 }
-function stopVoice() { window.speechSynthesis.cancel(); hideVoiceControls(); }
-function showVoiceControls() {
-    document.getElementById('faro-voice-controls').classList.add('active');
-    const icon = document.getElementById('faro-icon-pause-resume'); const btn = document.getElementById('faro-btn-pause-resume');
-    icon.textContent = 'pause'; btn.setAttribute('aria-label', 'Pausar lectura');
+
+function stopVoice() {
+    window.speechSynthesis.cancel();
+    hideVoiceControls();
 }
-function hideVoiceControls() { document.getElementById('faro-voice-controls').classList.remove('active'); }
+
+function showVoiceControls() {
+    const controls = document.getElementById('faro-voice-controls');
+    const icon = document.getElementById('faro-icon-pause-resume');
+    const btn = document.getElementById('faro-btn-pause-resume');
+
+    if (controls) controls.classList.add('active');
+    if (icon) icon.textContent = 'pause';
+    if (btn) btn.setAttribute('aria-label', 'Pausar lectura');
+}
+
+function hideVoiceControls() {
+    const controls = document.getElementById('faro-voice-controls');
+    const icon = document.getElementById('faro-icon-pause-resume');
+    const btn = document.getElementById('faro-btn-pause-resume');
+
+    if (controls) controls.classList.remove('active');
+    if (icon) icon.textContent = 'pause';
+    if (btn) btn.setAttribute('aria-label', 'Pausar lectura');
+}
 
 document.addEventListener('click', function(e) {
     if(!faroState.voz) return;
@@ -708,8 +779,12 @@ document.addEventListener('click', function(e) {
     let textToRead = e.target.innerText || e.target.alt || e.target.value;
     if(textToRead && textToRead.trim() !== '') {
         let msg = new SpeechSynthesisUtterance(textToRead);
-        msg.volume = faroState.volumenVoz / 100; msg.rate = 0.5 + (faroState.velocidadVoz / 100) * 1.5; 
-        msg.onstart = function() { showVoiceControls(); }; msg.onend = function() { hideVoiceControls(); }; msg.onerror = function() { hideVoiceControls(); };
+        msg.lang = document.documentElement.lang || "es-AR";
+        msg.volume = faroState.volumenVoz / 100;
+        msg.rate = 0.5 + (faroState.velocidadVoz / 100) * 1.5;
+        msg.onstart = function() { showVoiceControls(); };
+        msg.onend = function() { hideVoiceControls(); };
+        msg.onerror = function() { hideVoiceControls(); };
         window.speechSynthesis.speak(msg);
     }
 });
@@ -731,14 +806,14 @@ function cambiarVelocidadVoz(valor){
 
     const anterior = faroState.velocidadVoz;
 
-    faroState.velocidadVoz = valor;
+    faroState.velocidadVoz = Number(valor);
 
     guardarPreferenciasBackend();
 
     registrarEvento("ACCESSIBILITY_CHANGED", {
         adjustment_type: "voice_speed",
         old_value: anterior,
-        new_value: valor
+        new_value: faroState.velocidadVoz
     });
 
 }
@@ -747,14 +822,14 @@ function cambiarVolumenVoz(valor){
 
     const anterior = faroState.volumenVoz;
 
-    faroState.volumenVoz = valor;
+    faroState.volumenVoz = Number(valor);
 
     guardarPreferenciasBackend();
 
     registrarEvento("ACCESSIBILITY_CHANGED", {
         adjustment_type: "voice_volume",
         old_value: anterior,
-        new_value: valor
+        new_value: faroState.volumenVoz
     });
 
 }
@@ -763,15 +838,47 @@ function toggleVoz(checkbox){
 
     const anterior = faroState.voz;
 
-    faroState.voz = checkbox.checked;
+    faroState.voz = Boolean(checkbox.checked);
+
+    if (!faroState.voz) {
+        stopVoice();
+
+        if (faroState.perfil === "voz") {
+            faroState.perfil = null;
+        }
+    }
+
+    sincronizarControles();
 
     guardarPreferenciasBackend();
 
-    registrarEvento("ACCESSIBILITY_CHANGED", {
-        adjustment_type: "voice",
-        old_value: anterior,
-        new_value: checkbox.checked
-    });
+    if (anterior !== faroState.voz) {
+        registrarEvento("ACCESSIBILITY_CHANGED", {
+            adjustment_type: "voice",
+            old_value: anterior,
+            new_value: faroState.voz
+        });
+    }
+
+    const anunciador = document.getElementById("faro-anunciador");
+
+    if (anunciador) {
+        anunciador.textContent = faroState.voz
+            ? "Asistencia por voz activada."
+            : "Asistencia por voz desactivada.";
+    }
+
+}
+
+function togglePerfilVoz(){
+
+    if (faroState.voz) {
+        toggleVoz({checked: false});
+        cerrarTodo();
+        return;
+    }
+
+    aplicarPerfil("voz");
 
 }
 
@@ -891,6 +998,56 @@ function activarFocusTrap(root){
 
 }
 
+function solicitarRestablecimiento() {
+    const dialogo = document.getElementById("faro-reset-dialog");
+
+    if (!dialogo) {
+        return;
+    }
+
+    if (dialogo.dataset.faroKeyboardReady !== "true") {
+        dialogo.addEventListener("keydown", (e) => {
+            if (e.key === "Escape") {
+                e.stopPropagation();
+            }
+        });
+        dialogo.dataset.faroKeyboardReady = "true";
+    }
+
+    dialogo.addEventListener("close", () => {
+        const botonRestablecer = document.getElementById("btn-restablecer");
+
+        if (botonRestablecer && botonRestablecer.offsetParent !== null) {
+            botonRestablecer.focus();
+        }
+    }, {once: true});
+
+    if (typeof dialogo.showModal === "function") {
+        dialogo.showModal();
+    } else {
+        dialogo.setAttribute("open", "");
+    }
+}
+
+function cancelarRestablecimiento() {
+    const dialogo = document.getElementById("faro-reset-dialog");
+
+    if (!dialogo) {
+        return;
+    }
+
+    if (typeof dialogo.close === "function") {
+        dialogo.close();
+    } else {
+        dialogo.removeAttribute("open");
+    }
+}
+
+function confirmarRestablecimiento() {
+    cancelarRestablecimiento();
+    restablecerAjustes();
+}
+
 function restablecerAjustes() {
 
     // Reset al estado lógico base
@@ -906,9 +1063,10 @@ function restablecerAjustes() {
     faroState.altoContraste = false;
     faroState.modoOscuro = false;
     faroState.perfil = null;
+    faroState.posicionBoton = "right";
 
     // Detener cualquier lectura
-    window.speechSynthesis.cancel();
+    stopVoice();
 
     // Aplicar el nuevo estado
     aplicarEstado();
@@ -937,7 +1095,8 @@ function restablecerAjustes() {
 // PERFILES RÁPIDOS (Actualizados con las nuevas tarjetas)
 function aplicarPerfil(perfil) {
 
-    const perfilAnterior = faroState.perfil || "default";
+    // Cada perfil reemplaza al anterior y debe detener cualquier lectura activa.
+    stopVoice();
 
     // Guardar perfil seleccionado
     faroState.perfil = perfil;
@@ -968,7 +1127,9 @@ function aplicarPerfil(perfil) {
         case "voz":
             faroState.voz = true;
             setTimeout(()=>{
-                hablarFaro("Asistente por voz activado");
+                if (faroState.voz && faroState.perfil === "voz") {
+                    hablarFaro("Asistente por voz activado");
+                }
             },300);
 
             break;
@@ -995,10 +1156,22 @@ function aplicarPerfil(perfil) {
             break;
     }
     aplicarEstado();
-    document
-        .getElementById("faro-anunciador")
-        .textContent =
-        "Perfil Visibilidad activado";
+
+    const nombresPerfil = {
+        color: "Filtros de Color",
+        voz: "Asistente por Voz",
+        fuentes: "Fuentes legibles",
+        seguridad: "Seguridad Visual",
+        visibilidad: "Visibilidad",
+        enfoque: "Enfoque"
+    };
+
+    const anunciador = document.getElementById("faro-anunciador");
+
+    if (anunciador) {
+        anunciador.textContent =
+            `Perfil ${nombresPerfil[perfil] || perfil} activado`;
+    }
 
     sincronizarControles();
 
@@ -1012,7 +1185,6 @@ function aplicarPerfil(perfil) {
 
 }
 
-// Secuencia de Onboarding del Faro
 // Secuencia de Onboarding del Faro
 
 setTimeout(function() {
@@ -1407,8 +1579,10 @@ async function guardarPreferenciasBackend(){
 
 
             voice_volume:
-                faroState.volumenVoz
+                faroState.volumenVoz,
 
+            profile:
+                faroState.perfil
 
         };
       
@@ -1460,6 +1634,9 @@ async function cargarPreferenciasBackend(){
 
             faroState.posicionBoton =
                 settings.button_position ?? "right";
+
+            faroState.perfil =
+                settings.profile ?? null;
 
 
             // Visual
@@ -1586,10 +1763,13 @@ window.empezarFaro = empezarFaro;
 window.cerrarFaro = cerrarFaro;
 window.toggleMenu = toggleMenu;
 window.aplicarPerfil = aplicarPerfil;
+window.togglePerfilVoz = togglePerfilVoz;
 window.toggleClase = toggleClase;
 window.toggleVoz = toggleVoz;
 window.cambiarVelocidadVoz = cambiarVelocidadVoz;
 window.cambiarVolumenVoz = cambiarVolumenVoz;
+window.togglePauseResumeVoice = togglePauseResumeVoice;
+window.stopVoice = stopVoice;
 window.abrirSubmenu = abrirSubmenu;
 window.volverAlMenu = volverAlMenu;
 window.cerrarTodo = cerrarTodo;
@@ -1606,6 +1786,9 @@ window.togglePosicion = togglePosicion;
 window.actualizarPosicionBoton = actualizarPosicionBoton;
 
 window.restablecerAjustes = restablecerAjustes;
+window.solicitarRestablecimiento = solicitarRestablecimiento;
+window.cancelarRestablecimiento = cancelarRestablecimiento;
+window.confirmarRestablecimiento = confirmarRestablecimiento;
 
 window.faroState = faroState;
 
@@ -1627,14 +1810,34 @@ document.addEventListener("keydown", (e)=>{
 });
 document.addEventListener("keydown",(e)=>{
 
-    if(e.key==="Escape"){
+    if(e.key !== "Escape"){
+        return;
+    }
 
+    const dialogoRestablecer = document.getElementById("faro-reset-dialog");
+
+    if (
+        dialogoRestablecer?.open ||
+        e.target.closest?.("#faro-reset-dialog")
+    ) {
+        return;
+    }
+
+    const menu = document.getElementById("menuAccesibilidad");
+    const faroAbierto =
+        menu?.style.display === "flex" ||
+        SUBMENUS.some(id => document.getElementById(id)?.style.display === "block");
+
+    if (faroAbierto) {
         cerrarTodo();
-
     }
 
 });
 document.addEventListener("keydown",(e)=>{
+
+    const controlFaro = e.target.closest?.(
+        "#faro-extension-root [role='button']"
+    );
 
     if(
 
@@ -1642,13 +1845,13 @@ document.addEventListener("keydown",(e)=>{
 
         &&
 
-        e.target.matches("[role='button']")
+        controlFaro
 
     ){
 
         e.preventDefault();
 
-        e.target.click();
+        controlFaro.click();
 
     }
 

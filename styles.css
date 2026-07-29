@@ -33,10 +33,10 @@
         vertical-align: middle;
     }
 
-button:focus-visible,
-[role="button"]:focus-visible,
-input:focus-visible,
-select:focus-visible {
+#faro-extension-root button:focus-visible,
+#faro-extension-root [role="button"]:focus-visible,
+#faro-extension-root input:focus-visible,
+#faro-extension-root select:focus-visible {
 
     outline: 3px solid #0066ff;
     outline-offset: 3px;
@@ -55,6 +55,10 @@ select:focus-visible {
 .faro-voice-controls button { background: transparent; border: none; color: var(--faro-bg-card); cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 5px; border-radius: 50%; transition: 0.2s; }
 .faro-voice-controls button:hover, .faro-voice-controls button:focus-visible { background: var(--faro-hover); outline: 2px solid var(--faro-bg-item); outline-offset: 2px; }
 .faro-voice-controls .material-symbols-outlined { font-size: 32px; }
+
+#faroOptions button {
+    color: var(--faro-bg-card);
+}
 
 /* ---------------------------------------------------
    Alineación Global de Fuente y Textos
@@ -97,7 +101,7 @@ select:focus-visible {
     align-items: center;
     justify-content: center;
 }
-.logo { width: 100%; }
+#faro-extension-root .logo { width: 100%; }
 .faro-btn:hover, .faro-btn:focus {
     background: var(--faro-hover);
     transform: scale(1.08);
@@ -108,8 +112,9 @@ select:focus-visible {
 #faroMensaje { padding: 0 10px 0 15px; text-align: center; }
 .faro-box {
     position: fixed !important; bottom: 95px !important; right: 25px !important;
-    width: 310px; min-height: 90px; background: var(--faro-bg-card); color: var(--faro-text);
+    width: min(310px, calc(100vw - 32px)); min-height: 90px; background: var(--faro-bg-card); color: var(--faro-text);
     border: 2px solid var(--faro-primary); border-radius: 16px; padding: 20px 16px;
+    box-sizing: border-box;
     display: block; z-index: 99998 !important; box-shadow: 0 8px 20px rgba(0,0,0,0.15);
 }
 .faro-box::after {
@@ -129,153 +134,251 @@ select:focus-visible {
 /* ---------------------------------------------------
    Menú Accesibilidad Principal
 --------------------------------------------------- */
-.menu-accesibilidad {
+#faro-extension-root .menu-accesibilidad {
     position: fixed !important; right: 20px !important; bottom: 90px !important;
     display: none; flex-direction: column; gap: 10px; z-index: 100000 !important;
 }
-.menu-item {
+#faro-extension-root .menu-item {
     width: 170px; height: 46px; border: 2px solid var(--faro-primary); border-radius: 23px;
     background: var(--faro-bg-card); color: var(--faro-text); font-size: 12px; font-weight: 700;
     display: flex; align-items: center; justify-content: flex-start; gap: 12px; padding: 0 16px; 
     cursor: pointer; box-shadow: 0 4px 8px rgba(0,0,0,0.1); transition: all 0.2s ease;
 }
-.menu-item:hover, .menu-item:focus {
+#faro-extension-root .menu-item:hover,
+#faro-extension-root .menu-item:focus {
     background: var(--faro-bg-item); color: var(--faro-primary); transform: translateX(-5px);
     border-color: var(--faro-hover);
 }
-.menu-item .icono { font-size: 20px; width: 24px; text-align: center; color: var(--faro-primary); }
-
-.btn-restablecer { margin-top: 8px; background: var(--faro-bg-item); border-color: var(--faro-border); }
-.btn-restablecer:hover, .btn-restablecer:focus-visible { background: #FFEBEB; color: #D32F2F; border-color: #D32F2F; }
-.btn-restablecer:hover .icono, .btn-restablecer:focus-visible .icono { color: #D32F2F; }
+#faro-extension-root .menu-item .icono { font-size: 20px; width: 24px; text-align: center; color: var(--faro-primary); }
 
 /* ---------------------------------------------------
    Contenedor de Submenús y Cabeceras
 --------------------------------------------------- */
-.sub-menu-container {
+#faro-extension-root .sub-menu-container {
     position: fixed !important; right: 20px !important; bottom: 90px !important;
-    background-color: var(--faro-bg-card); width: 280px; height: 450px;
+    background-color: var(--faro-bg-card);
+    width: min(280px, calc(100vw - 32px));
+    height: min(450px, calc(100vh - 110px));
+    box-sizing: border-box;
     border: 2px solid var(--faro-primary); border-radius: 12px; padding: 16px;
     box-shadow: 0 8px 24px rgba(0,0,0,0.2); z-index: 100001 !important;
     display: none; overflow-y: auto; overflow-x: hidden;
 }
-.sub-menu-container::-webkit-scrollbar { width: 6px; }
-.sub-menu-container::-webkit-scrollbar-thumb { background: var(--faro-primary); border-radius: 4px; }
+#faro-extension-root .sub-menu-container::-webkit-scrollbar { width: 6px; }
+#faro-extension-root .sub-menu-container::-webkit-scrollbar-thumb { background: var(--faro-primary); border-radius: 4px; }
 
-.sub-menu-header { 
+#faro-extension-root .sub-menu-header {
     display: flex; justify-content: space-between; align-items: center; 
     margin-bottom: 16px; padding-bottom: 10px; border-bottom: 1px solid var(--faro-border); 
 }
-.sub-menu-header h1 { font-size: 10px; font-weight: 700; color: var(--faro-primary); text-transform: uppercase; letter-spacing: 0.5px; margin: 0; text-align: center; flex: 1; }
-.sub-icon-btn { 
+#faro-extension-root .sub-menu-header h1 { font-size: 12px; font-weight: 700; color: var(--faro-primary); text-transform: uppercase; letter-spacing: 0.5px; margin: 0; text-align: center; flex: 1; }
+#faro-extension-root .sub-icon-btn {
     background: var(--faro-bg-item); border: 1px solid var(--faro-border); border-radius: 6px; 
     font-size: 16px; width: 28px; height: 28px; cursor: pointer; color: var(--faro-text); 
     display: flex; align-items: center; justify-content: center; transition: 0.2s;
 }
-.sub-icon-btn:hover { background: var(--faro-primary); color: var(--faro-bg-card); border-color: var(--faro-hover); }
+#faro-extension-root .sub-icon-btn:hover { background: var(--faro-primary); color: var(--faro-bg-card); border-color: var(--faro-hover); }
 
-.sub-sub-header { display: flex; align-items: center; margin-bottom: 16px; gap: 8px; color: var(--faro-text); }
-.sub-sub-header h2 { font-size: 12px; font-weight: 700; margin: 0; }
-.sub-sub-header .material-symbols-outlined { font-size: 20px; color: var(--faro-text); }
+#faro-extension-root .sub-sub-header { display: flex; align-items: center; margin-bottom: 16px; gap: 8px; color: var(--faro-text); }
+#faro-extension-root .sub-sub-header h2 { font-size: 13px; font-weight: 700; margin: 0; }
+#faro-extension-root .sub-sub-header .material-symbols-outlined { font-size: 20px; color: var(--faro-text); }
 
 /* ---------------------------------------------------
    Listas y Elementos de Navegación
 --------------------------------------------------- */
-.menu-list-item { 
+#faro-extension-root .menu-list-item {
     display: flex; align-items: center; gap: 12px; padding: 12px 8px; 
     border-bottom: 1px solid var(--faro-border); cursor: pointer; 
     transition: background-color 0.2s ease, border-radius 0.2s; 
 }
-.menu-list-item:last-child { border-bottom: none; }
-.menu-list-item:hover { background-color: var(--faro-bg-item-hover); border-radius: 8px; }
-.menu-list-icon { font-size: 20px; color: var(--faro-primary); display: flex; align-items: center; justify-content: center; width: 24px; }
-.menu-list-text { display: flex; flex-direction: column; justify-content: center; }
-.menu-list-text h3 { font-size: 11px; font-weight: 700; color: var(--faro-text); margin: 0 0 4px 0; }
-.menu-list-text p { font-size: 9px; color: var(--faro-muted); margin: 0; line-height: 1.2; }
+#faro-extension-root .menu-list-item:last-child { border-bottom: none; }
+#faro-extension-root .menu-list-item:hover { background-color: var(--faro-bg-item-hover); border-radius: 8px; }
+#faro-extension-root .menu-list-icon { font-size: 20px; color: var(--faro-primary); display: flex; align-items: center; justify-content: center; width: 24px; }
+#faro-extension-root .menu-list-text { display: flex; flex-direction: column; justify-content: center; }
+#faro-extension-root .menu-list-text h3 { font-size: 12px; font-weight: 700; color: var(--faro-text); margin: 0 0 4px 0; }
+#faro-extension-root .menu-list-text p { font-size: 11px; color: var(--faro-muted); margin: 0; line-height: 1.35; }
 
 /* ---------------------------------------------------
    Controles Internos (Filas y Ajustes)
 --------------------------------------------------- */
-.sub-section-title { font-size: 10px; font-weight: 700; color: var(--faro-muted); text-transform: uppercase; margin-bottom: 10px; letter-spacing: 0.5px; }
-.sub-setting-row { margin-bottom: 12px; background: var(--faro-bg-item); padding: 10px 12px; border-radius: 8px; border: 1px solid transparent; transition: 0.2s; }
-.sub-setting-row:hover { border-color: var(--faro-border); }
-.sub-item-text h3 { font-size: 11px; font-weight: 700; margin: 0 0 4px 0; color: var(--faro-text); }
-.sub-item-text p { font-size: 9px; color: var(--faro-muted); margin: 0; line-height: 1.3; }
-.sub-toggle-item { display: flex; justify-content: space-between; align-items: center; }
-.sub-toggle-item .sub-item-text { padding-right: 10px; }
+#faro-extension-root .sub-section-title { font-size: 11px; font-weight: 700; color: var(--faro-muted); text-transform: uppercase; margin-bottom: 10px; letter-spacing: 0.5px; }
+#faro-extension-root .sub-setting-row { margin-bottom: 12px; background: var(--faro-bg-item); padding: 10px 12px; border-radius: 8px; border: 1px solid transparent; transition: 0.2s; }
+#faro-extension-root .sub-setting-row:hover { border-color: var(--faro-border); }
+#faro-extension-root .sub-item-text h3 { font-size: 12px; font-weight: 700; margin: 0 0 4px 0; color: var(--faro-text); }
+#faro-extension-root .sub-item-text p { font-size: 11px; color: var(--faro-muted); margin: 0; line-height: 1.4; }
+#faro-extension-root .sub-toggle-item { display: flex; justify-content: space-between; align-items: center; }
+#faro-extension-root .sub-toggle-item .sub-item-text { padding-right: 10px; }
+
+.faro-reset-row {
+    width: 100%;
+    margin-top: 24px;
+    border: 1px solid #B42318;
+    background: #FFF5F4;
+    color: #8A1C13;
+    cursor: pointer;
+    text-align: left;
+}
+.faro-reset-row .sub-item-text h3,
+.faro-reset-row .sub-item-text p,
+.faro-reset-row .material-symbols-outlined {
+    color: #8A1C13;
+}
+.faro-reset-row:hover,
+.faro-reset-row:focus-visible {
+    background: #FFE9E7;
+    border-color: #8A1C13;
+}
+
+.faro-confirm-dialog {
+    width: min(320px, calc(100vw - 32px));
+    padding: 20px;
+    border: 2px solid var(--faro-primary);
+    border-radius: 14px;
+    box-sizing: border-box;
+    background: var(--faro-bg-card);
+    color: var(--faro-text);
+    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.28);
+}
+.faro-confirm-dialog::backdrop {
+    background: rgba(0, 25, 48, 0.58);
+}
+.faro-confirm-dialog h2 {
+    margin: 0 0 10px;
+    color: var(--faro-text);
+    font-size: 16px;
+    line-height: 1.35;
+}
+.faro-confirm-dialog p {
+    margin: 0 0 20px;
+    color: var(--faro-muted);
+    font-size: 11px;
+    line-height: 1.5;
+}
+.faro-confirm-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+.faro-confirm-actions button {
+    min-height: 40px;
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+}
+.faro-confirm-cancel {
+    border: 1px solid var(--faro-border);
+    background: var(--faro-bg-card);
+    color: var(--faro-text);
+}
+.faro-confirm-reset {
+    border: 1px solid #8A1C13;
+    background: #8A1C13;
+    color: #FFFFFF !important;
+}
+.faro-confirm-cancel:hover {
+    background: var(--faro-bg-item-hover);
+}
+.faro-confirm-reset:hover {
+    background: #6F160F;
+}
+
+.voice-switch-label {
+    color: var(--faro-primary);
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.faro-coming-soon {
+    cursor: default;
+    opacity: 0.82;
+}
+.faro-status-label {
+    flex-shrink: 0;
+    padding: 4px 6px;
+    border-radius: 999px;
+    background: var(--faro-border);
+    color: var(--faro-text);
+    font-size: 10px;
+    font-weight: 700;
+}
 
 /* Sliders Math Buttons */
-.sub-slider-control { display: flex; align-items: center; margin-top: 10px; gap: 8px; }
-.sub-math-btn { 
+#faro-extension-root .sub-slider-control { display: flex; align-items: center; margin-top: 10px; gap: 8px; font-size: 11px !important; }
+#faro-extension-root .sub-math-btn {
     background: var(--faro-bg-card); border: 1px solid var(--faro-border); border-radius: 4px; 
     font-size: 16px; font-weight: bold; color: var(--faro-primary); cursor: pointer; 
     width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; transition: 0.2s;
 }
-.sub-math-btn:hover { background: var(--faro-primary); color: var(--faro-bg-card); }
+#faro-extension-root .sub-math-btn:hover { background: var(--faro-primary); color: var(--faro-bg-card); }
 
 /* ---------------------------------------------------
    Controles Especiales de Texto (Pills)
 --------------------------------------------------- */
-.text-option-group { display: flex; gap: 8px; margin-top: 10px; margin-bottom: 16px; }
-.size-pill, .align-pill { 
+#faro-extension-root .text-option-group { display: flex; gap: 8px; margin-top: 10px; margin-bottom: 16px; }
+#faro-extension-root .size-pill,
+#faro-extension-root .align-pill {
     flex: 1; background: var(--faro-bg-item); border: 2px solid transparent; border-radius: 12px; 
     padding: 10px 4px; display: flex; flex-direction: column; align-items: center; justify-content: center; 
     cursor: pointer; transition: all 0.2s ease; box-shadow: 0 1px 3px rgba(0,0,0,0.05); text-align: center;
 }
-.size-pill:hover, .align-pill:hover { background: var(--faro-bg-item-hover); }
-.size-pill.active, .align-pill.active { border-color: var(--faro-primary); background: var(--faro-bg-card); box-shadow: 0 2px 5px rgba(0,0,0,0.1); color: var(--faro-primary); }
+#faro-extension-root .size-pill:hover,
+#faro-extension-root .align-pill:hover { background: var(--faro-bg-item-hover); }
+#faro-extension-root .size-pill.active,
+#faro-extension-root .align-pill.active { border-color: var(--faro-primary); background: var(--faro-bg-card); box-shadow: 0 2px 5px rgba(0,0,0,0.1); color: var(--faro-primary); }
 
-.size-pill .preview-aa { font-weight: bold; display: block; color: inherit; line-height: 1;}
-.size-pill.active .preview-aa { color: var(--faro-primary); }
-.size-pill:not(.active) .preview-aa { color: var(--faro-text); }
-.size-pill.small .preview-aa { font-size: 12px; }
-.size-pill.normal .preview-aa { font-size: 15px; }
-.size-pill.large .preview-aa { font-size: 18px; }
-.size-pill span:last-child { font-size: 9px; color: var(--faro-muted); display: block; margin-top: 6px; }
-.size-pill.active span:last-child { color: var(--faro-primary); }
+#faro-extension-root .size-pill .preview-aa { font-weight: bold; display: block; color: inherit; line-height: 1;}
+#faro-extension-root .size-pill.active .preview-aa { color: var(--faro-primary); }
+#faro-extension-root .size-pill:not(.active) .preview-aa { color: var(--faro-text); }
+#faro-extension-root .size-pill.small .preview-aa { font-size: 12px; }
+#faro-extension-root .size-pill.normal .preview-aa { font-size: 15px; }
+#faro-extension-root .size-pill.large .preview-aa { font-size: 18px; }
+#faro-extension-root .size-pill span:last-child { font-size: 11px; color: var(--faro-muted); display: block; margin-top: 6px; }
+#faro-extension-root .size-pill.active span:last-child { color: var(--faro-primary); }
 
-.align-icon { font-size: 22px; color: var(--faro-text); }
-.align-pill.active .align-icon { color: var(--faro-primary); }
+#faro-extension-root .align-icon { font-size: 22px; color: var(--faro-text); }
+#faro-extension-root .align-pill.active .align-icon { color: var(--faro-primary); }
 
 /* Input Select Alineado */
-.faro-select {
+#faro-extension-root .faro-select {
     width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--faro-border); 
-    background: var(--faro-bg-card); font-size: 10px; color: var(--faro-text); 
+    background: var(--faro-bg-card); font-size: 11px; color: var(--faro-text);
     font-weight: 600; cursor: pointer; outline: none; transition: border-color 0.2s;
 }
-.faro-select:focus { border-color: var(--faro-primary); }
+#faro-extension-root .faro-select:focus { border-color: var(--faro-primary); }
 
 /* ---------------------------------------------------
    Inputs Range (Sliders) y Toggles (Switches)
 --------------------------------------------------- */
-.sub-menu-container input[type=range] { -webkit-appearance: none; appearance: none; width: 100%; background: transparent; }
-.sub-menu-container input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; height: 16px; width: 16px; border-radius: 50%; background: var(--faro-primary); border: 2px solid var(--faro-bg-card); box-shadow: 0 0 2px rgba(0,0,0,0.5); cursor: pointer; margin-top: -6px; }
-.sub-menu-container input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 4px; cursor: pointer; background: var(--faro-border); border-radius: 2px; }
+#faro-extension-root .sub-menu-container input[type=range] { -webkit-appearance: none; appearance: none; width: 100%; background: transparent; }
+#faro-extension-root .sub-menu-container input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; height: 16px; width: 16px; border-radius: 50%; background: var(--faro-primary); border: 2px solid var(--faro-bg-card); box-shadow: 0 0 2px rgba(0,0,0,0.5); cursor: pointer; margin-top: -6px; }
+#faro-extension-root .sub-menu-container input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 4px; cursor: pointer; background: var(--faro-border); border-radius: 2px; }
 
-.sub-switch { position: relative; display: inline-block; width: 34px; height: 20px; flex-shrink: 0; }
-.sub-switch input { opacity: 0; width: 0; height: 0; }
-.sub-switch .sub-slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--faro-border); border: 1px solid #B0C4D4; transition: .3s; }
-.sub-switch .sub-slider:before { position: absolute; content: ""; height: 14px; width: 14px; left: 2px; bottom: 2px; background-color: var(--faro-bg-card); transition: .3s; box-shadow: 0 1px 3px rgba(0,0,0,0.3); }
-.sub-switch input:checked + .sub-slider { background-color: var(--faro-primary); border-color: var(--faro-hover); }
-.sub-switch input:checked + .sub-slider:before { transform: translateX(14px); }
-.sub-slider.sub-round { border-radius: 20px; }
-.sub-slider.sub-round:before { border-radius: 50%; }
-.sub-switch input:focus-visible + .sub-slider,
-.sub-switch input:focus + .sub-slider {
+#faro-extension-root .sub-switch { position: relative; display: inline-block; width: 34px; height: 20px; flex-shrink: 0; }
+#faro-extension-root .sub-switch input { opacity: 0; width: 0; height: 0; }
+#faro-extension-root .sub-switch .sub-slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--faro-border); border: 1px solid #B0C4D4; transition: .3s; }
+#faro-extension-root .sub-switch .sub-slider:before { position: absolute; content: ""; height: 14px; width: 14px; left: 2px; bottom: 2px; background-color: var(--faro-bg-card); transition: .3s; box-shadow: 0 1px 3px rgba(0,0,0,0.3); }
+#faro-extension-root .sub-switch input:checked + .sub-slider { background-color: var(--faro-primary); border-color: var(--faro-hover); }
+#faro-extension-root .sub-switch input:checked + .sub-slider:before { transform: translateX(14px); }
+#faro-extension-root .sub-slider.sub-round { border-radius: 20px; }
+#faro-extension-root .sub-slider.sub-round:before { border-radius: 50%; }
+#faro-extension-root .sub-switch input:focus-visible + .sub-slider,
+#faro-extension-root .sub-switch input:focus + .sub-slider {
     box-shadow: 0 0 0 3px #0066ff;
 }
 
 /* ---------------------------------------------------
    NUEVO GRID DE PERFILES M3 (Alineado a Izquierda)
 --------------------------------------------------- */
-.perfiles-grid { 
+#faro-extension-root .perfiles-grid {
     display: grid; 
     grid-template-columns: 1fr 1fr; 
     gap: 10px; 
     margin-bottom: 12px; 
 }
 
-.perfil-card { 
+#faro-extension-root .perfil-card {
     background-color: var(--faro-bg-item); 
     border-radius: 12px; 
     padding: 14px 12px; 
@@ -288,35 +391,35 @@ select:focus-visible {
     text-align: left; 
 }
 
-.perfil-card:hover { 
+#faro-extension-root .perfil-card:hover {
     background-color: var(--faro-bg-item-hover); 
     border-color: var(--faro-border); 
     transform: translateY(-2px); 
 }
 
-.perfil-icon { 
+#faro-extension-root .perfil-icon {
     font-size: 22px; 
     margin-bottom: 12px; 
     color: var(--faro-text); 
 }
 
-.perfil-card h3 { 
-    font-size: 10px; 
+#faro-extension-root .perfil-card h3 {
+    font-size: 12px;
     font-weight: 700; 
     color: var(--faro-text); 
     margin-bottom: 4px; 
     line-height: 1.2;
 }
 
-.perfil-card p { 
-    font-size: 8.5px; 
+#faro-extension-root .perfil-card p {
+    font-size: 11px;
     color: var(--faro-muted); 
     line-height: 1.3; 
     margin: 0; 
 }
 
 /* Tarjeta Inferior "Personaliza tu perfil" */
-.perfil-card-full { 
+#faro-extension-root .perfil-card-full {
     display: flex; 
     align-items: center; 
     background-color: var(--faro-bg-card); 
@@ -328,36 +431,36 @@ select:focus-visible {
     transition: 0.2s; 
 }
 
-.perfil-card-full:hover { 
+#faro-extension-root .perfil-card-full:hover {
     background-color: var(--faro-bg-item-hover); 
     border-color: var(--faro-text); 
 }
 
-.perfil-card-full .perfil-icon { 
+#faro-extension-root .perfil-card-full .perfil-icon {
     margin-bottom: 0; 
     color: var(--faro-text); 
     font-size: 24px; 
 }
 
-.perfil-full-text { 
+#faro-extension-root .perfil-full-text {
     flex: 1; 
 }
 
-.perfil-full-text h3 { 
-    font-size: 11px; 
+#faro-extension-root .perfil-full-text h3 {
+    font-size: 12px;
     font-weight: 700; 
     color: var(--faro-text); 
     margin: 0 0 4px 0; 
 }
 
-.perfil-full-text p { 
-    font-size: 9px; 
+#faro-extension-root .perfil-full-text p {
+    font-size: 11px;
     color: var(--faro-text); 
     line-height: 1.3; 
     margin: 0; 
 }
 
-.perfil-chevron { 
+#faro-extension-root .perfil-chevron {
     font-size: 20px; 
     font-weight: bold; 
     color: var(--faro-text); 
