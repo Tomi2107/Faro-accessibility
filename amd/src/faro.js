@@ -110,10 +110,49 @@ function tourYaVisto() {
         
         /* Modo Oscuro */
         body.faro-dark-mode,
-        body.faro-dark-mode * {
-            background-color:#121212 !important;
-            color:#e0e0e0 !important;
-            border-color:#333 !important;
+        body.faro-dark-mode main,
+        body.faro-dark-mode section,
+        body.faro-dark-mode article,
+        body.faro-dark-mode aside,
+        body.faro-dark-mode div:not(#faro-extension-root),
+        body.faro-dark-mode p,
+        body.faro-dark-mode h1,
+        body.faro-dark-mode h2,
+        body.faro-dark-mode h3,
+        body.faro-dark-mode h4,
+        body.faro-dark-mode h5,
+        body.faro-dark-mode h6,
+        body.faro-dark-mode ul,
+        body.faro-dark-mode li,
+        body.faro-dark-mode table,
+        body.faro-dark-mode th,
+        body.faro-dark-mode td {
+            background-color: #121212 !important;
+            color: #e0e0e0 !important;
+            border-color: #333333 !important;
+        }
+
+        /* Tarjetas y bloques de Moodle */
+        body.faro-dark-mode .card,
+        body.faro-dark-mode .block,
+        body.faro-dark-mode .modal-content {
+            background-color: #1e1e1e !important;
+            color: #e0e0e0 !important;
+            border-color: #444444 !important;
+        }
+
+        /* Enlaces */
+        body.faro-dark-mode a:not(.btn) {
+            color: #66b3ff !important;
+        }
+
+        /* Elementos visuales y controles */
+        body.faro-dark-mode img,
+        body.faro-dark-mode svg,
+        body.faro-dark-mode video,
+        body.faro-dark-mode canvas,
+        body.faro-dark-mode iframe {
+            background-color: transparent !important;
         }      
     `;
     document.head.appendChild(style);
@@ -1539,6 +1578,19 @@ async function cargarPreferenciasBackend(){
 let FARO_READY = false;
 
 async function iniciarFaro() {
+
+    // SOLUCIÓN PARA MÓVILES EN MOODLE:
+    // FARO debe estar directamente bajo <body>
+    // para evitar problemas de position: fixed causados
+    // por contenedores padres con transform/filter.
+    (function moverFaroAlBody() {
+        const faroRoot = document.getElementById("faro-extension-root");
+
+        if (faroRoot && faroRoot.parentNode !== document.body) {
+            document.body.appendChild(faroRoot);
+            console.log("FARO reubicado en body para compatibilidad móvil.");
+        }
+    })();
 
     const root = document.getElementById("faro-extension-root");
 
