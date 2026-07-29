@@ -109,12 +109,49 @@ function tourYaVisto() {
         }
         
         /* Modo Oscuro */
-        body.faro-dark-mode,
-        body.faro-dark-mode * {
-            background-color:#121212 !important;
-            color:#e0e0e0 !important;
-            border-color:#333 !important;
-        }      
+
+body.faro-dark-mode,
+body.faro-dark-mode main,
+body.faro-dark-mode section,
+body.faro-dark-mode article,
+body.faro-dark-mode aside,
+body.faro-dark-mode div:not(.card):not(.block):not(.modal-content):not(#faro-extension-wrapper *),
+body.faro-dark-mode p,
+body.faro-dark-mode h1, body.faro-dark-mode h2, body.faro-dark-mode h3, 
+body.faro-dark-mode h4, body.faro-dark-mode h5, body.faro-dark-mode h6,
+body.faro-dark-mode ul, body.faro-dark-mode li,
+body.faro-dark-mode table, body.faro-dark-mode th, body.faro-dark-mode td {
+    background-color: #121212 !important;
+    color: #e0e0e0 !important;
+    border-color: #333333 !important;
+}
+
+/* 2. Tarjetas y Bloques de Moodle: Tono ligeramente más claro para mantener la jerarquía visual */
+body.faro-dark-mode .card,
+body.faro-dark-mode .block,
+body.faro-dark-mode .modal-content {
+    background-color: #1E1E1E !important; 
+    color: #e0e0e0 !important;
+    border-color: #444444 !important;
+}
+
+/* 3. Protección de hipervínculos para asegurar lectura en contraste oscuro */
+body.faro-dark-mode a:not(.btn):not(#faro-extension-wrapper *) {
+    color: #66b3ff !important; 
+}
+
+/* 4. Protección estricta: Los recursos visuales e inputs NO deben tener fondo forzado */
+body.faro-dark-mode img,
+body.faro-dark-mode svg,
+body.faro-dark-mode video,
+body.faro-dark-mode canvas,
+body.faro-dark-mode iframe,
+body.faro-dark-mode button:not(#faro-extension-wrapper *),
+body.faro-dark-mode input,
+body.faro-dark-mode select,
+body.faro-dark-mode textarea {
+    background-color: transparent !important;
+}
     `;
     document.head.appendChild(style);
 })();
@@ -1540,6 +1577,16 @@ let FARO_READY = false;
 
 async function iniciarFaro() {
 
+    // SOLUCIÓN PARA MÓVILES EN MOODLE: 
+    // Mover la herramienta FARO directamente al <body> de la página
+    (function moverFaroAlBody() {
+        var faroRoot = document.getElementById("faro-extension-root");
+        if (faroRoot && faroRoot.parentNode !== document.body) {
+            document.body.appendChild(faroRoot);
+            console.log("🛠️ FARO reubicado en el body para compatibilidad móvil.");
+        }
+    })();
+
     const root = document.getElementById("faro-extension-root");
 
     if (root) {
@@ -1549,11 +1596,8 @@ async function iniciarFaro() {
     FARO_READY = false;
 
     try {
-
         await cargarPreferenciasBackend();
-
         aplicarEstado();
-
         sincronizarControles();
 
         if (tourYaVisto()) {
@@ -1563,22 +1607,16 @@ async function iniciarFaro() {
         FARO_READY = true;
 
     } catch (e) {
-
         console.error(e);
-
     } finally {
-
         requestAnimationFrame(() => {
-
             if (root) {
                 root.style.visibility = "visible";
             }
-
         });
-
     }
+    
     activarFocusTrap(document.getElementById("faro-extension-root"));
-
 }
 
 // Exponer funciones usadas por HTML
