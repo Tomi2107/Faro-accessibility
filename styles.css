@@ -72,8 +72,8 @@
 @keyframes faro-slide-up-fade { from { opacity: 0; transform: translate(-50%, 20px); } to { opacity: 1; transform: translate(-50%, 0); } }
 #faro-extension-root .faro-voice-controls button { background: transparent; border: none; color: var(--faro-on-primary); cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 5px; border-radius: 50%; transition: 0.2s; }
 #faro-extension-root .faro-voice-controls button:hover,
-#faro-extension-root .faro-voice-controls button:focus-visible { background: var(--faro-hover); outline: 2px solid var(--faro-bg-item); outline-offset: 2px; }
-#faro-extension-root .faro-voice-controls .material-symbols-outlined { font-size: 32px; }
+#faro-extension-root .faro-voice-controls button:focus-visible { background: var(--faro-hover); color: var(--faro-on-primary); outline: 2px solid var(--faro-bg-item); outline-offset: 2px; }
+#faro-extension-root .faro-voice-controls .material-symbols-outlined { color: var(--faro-on-primary); font-size: 32px; }
 
 /* ---------------------------------------------------
    Botón Flotante y Onboarding
