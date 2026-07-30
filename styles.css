@@ -2,9 +2,10 @@
        VARIABLES CSS DE FARO
        ========================================================================== */
 
-:root {
+#faro-extension-root {
     /* Identidad visual FARO definida junto a UX/UI */
     --faro-primary: #123647;         /* Azul petróleo para interacciones */
+    --faro-on-primary: #FFFFFF;      /* Texto e iconos sobre fondos primarios */
     --faro-hover: #092735;           /* Azul petróleo profundo para hover */
     --faro-accent: #123647;          /* Azul petróleo para estados activos */
     --faro-highlight: #F7D768;       /* Amarillo FARO para énfasis sobre fondos oscuros */
@@ -13,6 +14,7 @@
     --faro-bg-item: #EEFAF5;         /* Verde menta claro para elementos */
     --faro-bg-item-hover: #DFF3EB;   /* Verde menta para hover */
     --faro-border: #CFE3DD;          /* Verde grisáceo para divisiones */
+    --faro-control-border: #728E87;  /* Borde de controles con contraste mínimo 3:1 */
     --faro-text: #123647;            /* Azul petróleo para texto principal */
     --faro-muted: #49636D;           /* Azul grisáceo para texto secundario */
 }
@@ -25,8 +27,15 @@
     #faro-extension-root input,
     #faro-extension-root select {
         font-family: 'Atkinson Hyperlegible', Arial, sans-serif;
-        color: var(--faro-text);
         box-sizing: border-box;
+    }
+
+    /* Cada botón define su color según el fondo del componente.
+       No agregar color al selector global: pisaría los estados sobre fondo oscuro. */
+    #faro-extension-root,
+    #faro-extension-root input,
+    #faro-extension-root select {
+        color: var(--faro-text);
     }
 
     #faro-extension-root h1,
@@ -54,44 +63,22 @@
 /* ---------------------------------------------------
     Controles de Voz Flotantes (Centro Inferior)
 --------------------------------------------------- */
-.faro-voice-controls {
+#faro-extension-root .faro-voice-controls {
     position: fixed !important; bottom: 30px !important; left: 50% !important; transform: translateX(-50%) !important;
     background: var(--faro-primary); border: 2px solid var(--faro-bg-card); border-radius: 30px; padding: 10px 20px;
     display: none; gap: 15px; align-items: center; box-shadow: 0 4px 15px rgba(0,0,0,0.3); z-index: 100005 !important;
 }
-.faro-voice-controls.active { display: flex; animation: slideUpFade 0.3s ease-out; }
-@keyframes slideUpFade { from { opacity: 0; transform: translate(-50%, 20px); } to { opacity: 1; transform: translate(-50%, 0); } }
-.faro-voice-controls button { background: transparent; border: none; color: var(--faro-bg-card); cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 5px; border-radius: 50%; transition: 0.2s; }
-.faro-voice-controls button:hover, .faro-voice-controls button:focus-visible { background: var(--faro-hover); outline: 2px solid var(--faro-bg-item); outline-offset: 2px; }
-.faro-voice-controls .material-symbols-outlined { font-size: 32px; }
-
-#faroOptions button {
-    color: var(--faro-bg-card);
-}
-
-/* ---------------------------------------------------
-   Alineación Global de Fuente y Textos
---------------------------------------------------- */
-#faro-extension-root,
-#faro-extension-root button,
-#faro-extension-root input,
-#faro-extension-root select {
-    font-family: 'Atkinson Hyperlegible', Arial, sans-serif;
-    color: var(--faro-text);
-    box-sizing: border-box;
-}
-
-/* Protección de la fuente para los Iconos */
-#faro-extension-root .material-symbols-outlined {
-    font-family: 'Material Symbols Outlined', sans-serif !important;
-    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-    vertical-align: middle;
-}
+#faro-extension-root .faro-voice-controls.active { display: flex; animation: faro-slide-up-fade 0.3s ease-out; }
+@keyframes faro-slide-up-fade { from { opacity: 0; transform: translate(-50%, 20px); } to { opacity: 1; transform: translate(-50%, 0); } }
+#faro-extension-root .faro-voice-controls button { background: transparent; border: none; color: var(--faro-on-primary); cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 5px; border-radius: 50%; transition: 0.2s; }
+#faro-extension-root .faro-voice-controls button:hover,
+#faro-extension-root .faro-voice-controls button:focus-visible { background: var(--faro-hover); outline: 2px solid var(--faro-bg-item); outline-offset: 2px; }
+#faro-extension-root .faro-voice-controls .material-symbols-outlined { font-size: 32px; }
 
 /* ---------------------------------------------------
    Botón Flotante y Onboarding
 --------------------------------------------------- */
-.faro-btn {
+#faro-extension-root .faro-btn {
     position: fixed !important;
     bottom: 20px !important;
     right: 20px !important;
@@ -100,7 +87,7 @@
     border: 3px solid var(--faro-bg-card);
     border-radius: 50%;
     background: var(--faro-primary);
-    color: var(--faro-bg-card);
+    color: var(--faro-on-primary);
     font-size: 30px;
     cursor: pointer;
     box-shadow: 0 4px 12px rgba(18, 54, 71, 0.32);
@@ -111,34 +98,35 @@
     justify-content: center;
 }
 #faro-extension-root .logo { width: 100%; }
-.faro-btn:hover, .faro-btn:focus {
+#faro-extension-root .faro-btn:hover,
+#faro-extension-root .faro-btn:focus {
     background: var(--faro-hover);
     transform: scale(1.08);
     outline: 3px solid var(--faro-bg-item);
     outline-offset: 2px;
 }
 
-#faroMensaje { padding: 0 10px 0 15px; text-align: center; }
-.faro-box {
+#faro-extension-root #faroMensaje { padding: 0 10px 0 15px; text-align: center; }
+#faro-extension-root .faro-box {
     position: fixed !important; bottom: 95px !important; right: 25px !important;
     width: min(310px, calc(100vw - 32px)); min-height: 90px; background: var(--faro-bg-card); color: var(--faro-text);
     border: 2px solid var(--faro-primary); border-radius: 16px; padding: 20px 16px;
     box-sizing: border-box;
     display: block; z-index: 99998 !important; box-shadow: 0 8px 20px rgba(0,0,0,0.15);
 }
-.faro-box::after {
+#faro-extension-root .faro-box::after {
     content: ""; position: absolute; bottom: -10px; right: 25px; width: 16px; height: 16px;
     background: var(--faro-bg-card); border-right: 2px solid var(--faro-primary);
     border-bottom: 2px solid var(--faro-primary); transform: rotate(45deg);
 }
-.faro-box h3 { font-size: 16px; font-weight: 700; line-height: 1.3; margin: 0 0 8px 0; color: var(--faro-primary); }
-.faro-box p { font-size: 12px; font-weight: 500; line-height: 1.5; margin: 0 0 16px 0; color: var(--faro-text); }
-.faro-options { display: flex; justify-content: center; }
-.faro-options button {
-    background: var(--faro-primary); border: none; border-radius: 6px; color: var(--faro-bg-card);
+#faro-extension-root .faro-box h3 { font-size: 16px; font-weight: 700; line-height: 1.3; margin: 0 0 8px 0; color: var(--faro-primary); }
+#faro-extension-root .faro-box p { font-size: 12px; font-weight: 500; line-height: 1.5; margin: 0 0 16px 0; color: var(--faro-text); }
+#faro-extension-root .faro-options { display: flex; justify-content: center; }
+#faro-extension-root .faro-options button {
+    background: var(--faro-primary); border: none; border-radius: 6px; color: var(--faro-on-primary);
     font-size: 12px; font-weight: bold; padding: 10px 24px; cursor: pointer; transition: 0.2s;
 }
-.faro-options button:hover { background: var(--faro-hover); transform: scale(1.05); }
+#faro-extension-root .faro-options button:hover { background: var(--faro-hover); transform: scale(1.05); }
 
 /* ---------------------------------------------------
    Menú Accesibilidad Principal
@@ -182,11 +170,11 @@
 }
 #faro-extension-root .sub-menu-header h1 { font-size: 12px; font-weight: 700; color: var(--faro-primary); text-transform: uppercase; letter-spacing: 0.5px; margin: 0; text-align: center; flex: 1; }
 #faro-extension-root .sub-icon-btn {
-    background: var(--faro-bg-item); border: 1px solid var(--faro-border); border-radius: 6px; 
+    background: var(--faro-bg-item); border: 1px solid var(--faro-control-border); border-radius: 6px;
     font-size: 16px; width: 28px; height: 28px; cursor: pointer; color: var(--faro-text); 
     display: flex; align-items: center; justify-content: center; transition: 0.2s;
 }
-#faro-extension-root .sub-icon-btn:hover { background: var(--faro-primary); color: var(--faro-bg-card); border-color: var(--faro-hover); }
+#faro-extension-root .sub-icon-btn:hover { background: var(--faro-primary); color: var(--faro-on-primary); border-color: var(--faro-hover); }
 
 #faro-extension-root .sub-sub-header { display: flex; align-items: center; margin-bottom: 16px; gap: 8px; color: var(--faro-text); }
 #faro-extension-root .sub-sub-header h2 { font-size: 13px; font-weight: 700; margin: 0; }
@@ -218,7 +206,7 @@
 #faro-extension-root .sub-toggle-item { display: flex; justify-content: space-between; align-items: center; }
 #faro-extension-root .sub-toggle-item .sub-item-text { padding-right: 10px; }
 
-.faro-reset-row {
+#faro-extension-root .faro-reset-row {
     width: 100%;
     margin-top: 24px;
     border: 1px solid #B42318;
@@ -227,18 +215,18 @@
     cursor: pointer;
     text-align: left;
 }
-.faro-reset-row .sub-item-text h3,
-.faro-reset-row .sub-item-text p,
-.faro-reset-row .material-symbols-outlined {
+#faro-extension-root .faro-reset-row .sub-item-text h3,
+#faro-extension-root .faro-reset-row .sub-item-text p,
+#faro-extension-root .faro-reset-row .material-symbols-outlined {
     color: #8A1C13;
 }
-.faro-reset-row:hover,
-.faro-reset-row:focus-visible {
+#faro-extension-root .faro-reset-row:hover,
+#faro-extension-root .faro-reset-row:focus-visible {
     background: #FFE9E7;
     border-color: #8A1C13;
 }
 
-.faro-confirm-dialog {
+#faro-extension-root .faro-confirm-dialog {
     width: min(320px, calc(100vw - 32px));
     padding: 20px;
     border: 2px solid var(--faro-primary);
@@ -248,27 +236,27 @@
     color: var(--faro-text);
     box-shadow: 0 12px 36px rgba(0, 0, 0, 0.28);
 }
-.faro-confirm-dialog::backdrop {
+#faro-extension-root .faro-confirm-dialog::backdrop {
     background: rgba(0, 25, 48, 0.58);
 }
-.faro-confirm-dialog h2 {
+#faro-extension-root .faro-confirm-dialog h2 {
     margin: 0 0 10px;
     color: var(--faro-text);
     font-size: 16px;
     line-height: 1.35;
 }
-.faro-confirm-dialog p {
+#faro-extension-root .faro-confirm-dialog p {
     margin: 0 0 20px;
     color: var(--faro-muted);
     font-size: 11px;
     line-height: 1.5;
 }
-.faro-confirm-actions {
+#faro-extension-root .faro-confirm-actions {
     display: flex;
     justify-content: flex-end;
     gap: 10px;
 }
-.faro-confirm-actions button {
+#faro-extension-root .faro-confirm-actions button {
     min-height: 40px;
     padding: 8px 14px;
     border-radius: 8px;
@@ -276,34 +264,34 @@
     font-weight: 700;
     cursor: pointer;
 }
-.faro-confirm-cancel {
-    border: 1px solid var(--faro-border);
+#faro-extension-root .faro-confirm-cancel {
+    border: 1px solid var(--faro-control-border);
     background: var(--faro-bg-card);
     color: var(--faro-text);
 }
-.faro-confirm-reset {
+#faro-extension-root .faro-confirm-reset {
     border: 1px solid #8A1C13;
     background: #8A1C13;
-    color: #FFFFFF !important;
+    color: var(--faro-on-primary);
 }
-.faro-confirm-cancel:hover {
+#faro-extension-root .faro-confirm-cancel:hover {
     background: var(--faro-bg-item-hover);
 }
-.faro-confirm-reset:hover {
+#faro-extension-root .faro-confirm-reset:hover {
     background: #6F160F;
 }
 
-.voice-switch-label {
+#faro-extension-root .voice-switch-label {
     color: var(--faro-primary);
     font-size: 11px;
     font-weight: 700;
 }
 
-.faro-coming-soon {
+#faro-extension-root .faro-coming-soon {
     cursor: default;
     opacity: 0.82;
 }
-.faro-status-label {
+#faro-extension-root .faro-status-label {
     flex-shrink: 0;
     padding: 4px 6px;
     border-radius: 999px;
@@ -316,11 +304,11 @@
 /* Sliders Math Buttons */
 #faro-extension-root .sub-slider-control { display: flex; align-items: center; margin-top: 10px; gap: 8px; font-size: 11px !important; }
 #faro-extension-root .sub-math-btn {
-    background: var(--faro-bg-card); border: 1px solid var(--faro-border); border-radius: 4px; 
+    background: var(--faro-bg-card); border: 1px solid var(--faro-control-border); border-radius: 4px;
     font-size: 16px; font-weight: bold; color: var(--faro-primary); cursor: pointer; 
     width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; transition: 0.2s;
 }
-#faro-extension-root .sub-math-btn:hover { background: var(--faro-primary); color: var(--faro-bg-card); }
+#faro-extension-root .sub-math-btn:hover { background: var(--faro-primary); color: var(--faro-on-primary); }
 
 /* ---------------------------------------------------
    Controles Especiales de Texto (Pills)
@@ -328,7 +316,7 @@
 #faro-extension-root .text-option-group { display: flex; gap: 8px; margin-top: 10px; margin-bottom: 16px; }
 #faro-extension-root .size-pill,
 #faro-extension-root .align-pill {
-    flex: 1; background: var(--faro-bg-item); border: 2px solid transparent; border-radius: 12px; 
+    flex: 1; background: var(--faro-bg-item); border: 2px solid var(--faro-control-border); border-radius: 12px;
     padding: 10px 4px; display: flex; flex-direction: column; align-items: center; justify-content: center; 
     cursor: pointer; transition: all 0.2s ease; box-shadow: 0 1px 3px rgba(0,0,0,0.05); text-align: center;
 }
@@ -351,7 +339,7 @@
 
 /* Input Select Alineado */
 #faro-extension-root .faro-select {
-    width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--faro-border); 
+    width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--faro-control-border);
     background: var(--faro-bg-card); font-size: 11px; color: var(--faro-text);
     font-weight: 600; cursor: pointer; outline: none; transition: border-color 0.2s;
 }
@@ -360,13 +348,15 @@
 /* ---------------------------------------------------
    Inputs Range (Sliders) y Toggles (Switches)
 --------------------------------------------------- */
-#faro-extension-root .sub-menu-container input[type=range] { -webkit-appearance: none; appearance: none; width: 100%; background: transparent; }
+#faro-extension-root .sub-menu-container input[type=range] { -webkit-appearance: none; appearance: none; width: 100%; background: transparent; accent-color: var(--faro-primary); }
 #faro-extension-root .sub-menu-container input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; height: 16px; width: 16px; border-radius: 50%; background: var(--faro-primary); border: 2px solid var(--faro-bg-card); box-shadow: 0 0 2px rgba(0,0,0,0.5); cursor: pointer; margin-top: -6px; }
-#faro-extension-root .sub-menu-container input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 4px; cursor: pointer; background: var(--faro-border); border-radius: 2px; }
+#faro-extension-root .sub-menu-container input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 4px; cursor: pointer; background: var(--faro-control-border); border-radius: 2px; }
+#faro-extension-root .sub-menu-container input[type=range]::-moz-range-thumb { height: 16px; width: 16px; border-radius: 50%; background: var(--faro-primary); border: 2px solid var(--faro-bg-card); box-shadow: 0 0 2px rgba(0,0,0,0.5); cursor: pointer; }
+#faro-extension-root .sub-menu-container input[type=range]::-moz-range-track { width: 100%; height: 4px; cursor: pointer; background: var(--faro-control-border); border: none; border-radius: 2px; }
 
 #faro-extension-root .sub-switch { position: relative; display: inline-block; width: 34px; height: 20px; flex-shrink: 0; }
 #faro-extension-root .sub-switch input { opacity: 0; width: 0; height: 0; }
-#faro-extension-root .sub-switch .sub-slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--faro-border); border: 1px solid #B0C4D4; transition: .3s; }
+#faro-extension-root .sub-switch .sub-slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--faro-border); border: 1px solid var(--faro-control-border); transition: .3s; }
 #faro-extension-root .sub-switch .sub-slider:before { position: absolute; content: ""; height: 14px; width: 14px; left: 2px; bottom: 2px; background-color: var(--faro-bg-card); transition: .3s; box-shadow: 0 1px 3px rgba(0,0,0,0.3); }
 #faro-extension-root .sub-switch input:checked + .sub-slider { background-color: var(--faro-primary); border-color: var(--faro-hover); }
 #faro-extension-root .sub-switch input:checked + .sub-slider:before { transform: translateX(14px); }
