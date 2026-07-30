@@ -1796,7 +1796,6 @@ async function iniciarFaro() {
     activarFocusTrap(document.getElementById("faro-extension-root"));
 }
 
-
 // Exponer funciones usadas por HTML
 window.empezarFaro = empezarFaro;
 window.cerrarFaro = cerrarFaro;
