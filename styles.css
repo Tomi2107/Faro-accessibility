@@ -3,16 +3,18 @@
        ========================================================================== */
 
 :root {
-    /* Paleta Material Design 3 y Accesibilidad (Contraste 4.5:1 mínimo) */
-    --faro-primary: #004B94;         /* Azul cobalto (Interacciones) */
-    --faro-hover: #003366;           /* Azul marino (Hover y estados activos) */
-    --faro-accent: #003366;          /* Azul marino para foco o bordes */
+    /* Identidad visual FARO definida junto a UX/UI */
+    --faro-primary: #123647;         /* Azul petróleo para interacciones */
+    --faro-hover: #092735;           /* Azul petróleo profundo para hover */
+    --faro-accent: #123647;          /* Azul petróleo para estados activos */
+    --faro-highlight: #F7D768;       /* Amarillo FARO para énfasis sobre fondos oscuros */
+    --faro-focus: #765000;           /* Ocre accesible para foco sobre fondos claros */
     --faro-bg-card: #FFFFFF;         /* Blanco puro para fondos de menú */
-    --faro-bg-item: #F5F8FA;         /* Tono pastel muy suave para elementos */
-    --faro-bg-item-hover: #E9F0F5;   /* Tono intermedio para hover de elementos */
-    --faro-border: #D1DCE5;          /* Gris/Azul muy suave para divisiones */
-    --faro-text: #1A1A1A;            /* Gris muy oscuro para texto principal */
-    --faro-muted: #545454;           /* Gris medio para texto secundario */
+    --faro-bg-item: #EEFAF5;         /* Verde menta claro para elementos */
+    --faro-bg-item-hover: #DFF3EB;   /* Verde menta para hover */
+    --faro-border: #CFE3DD;          /* Verde grisáceo para divisiones */
+    --faro-text: #123647;            /* Azul petróleo para texto principal */
+    --faro-muted: #49636D;           /* Azul grisáceo para texto secundario */
 }
 
     /* ==========================================================================
@@ -22,9 +24,16 @@
     #faro-extension-root button,
     #faro-extension-root input,
     #faro-extension-root select {
-        font-family: 'Roboto Mono', monospace;
+        font-family: 'Atkinson Hyperlegible', Arial, sans-serif;
         color: var(--faro-text);
         box-sizing: border-box;
+    }
+
+    #faro-extension-root h1,
+    #faro-extension-root h2,
+    #faro-extension-root h3,
+    #faro-extension-root .menu-item {
+        font-family: 'Nunito', 'Atkinson Hyperlegible', Arial, sans-serif;
     }
 
     #faro-extension-root .material-symbols-outlined {
@@ -38,7 +47,7 @@
 #faro-extension-root input:focus-visible,
 #faro-extension-root select:focus-visible {
 
-    outline: 3px solid #0066ff;
+    outline: 3px solid var(--faro-focus);
     outline-offset: 3px;
 
 }
@@ -67,7 +76,7 @@
 #faro-extension-root button,
 #faro-extension-root input,
 #faro-extension-root select {
-    font-family: 'Roboto Mono', monospace;
+    font-family: 'Atkinson Hyperlegible', Arial, sans-serif;
     color: var(--faro-text);
     box-sizing: border-box;
 }
@@ -94,7 +103,7 @@
     color: var(--faro-bg-card);
     font-size: 30px;
     cursor: pointer;
-    box-shadow: 0 4px 12px rgba(0, 75, 148, 0.4);
+    box-shadow: 0 4px 12px rgba(18, 54, 71, 0.32);
     z-index: 99999 !important;
     transition: all 0.3s ease;
     display: flex;
@@ -365,7 +374,7 @@
 #faro-extension-root .sub-slider.sub-round:before { border-radius: 50%; }
 #faro-extension-root .sub-switch input:focus-visible + .sub-slider,
 #faro-extension-root .sub-switch input:focus + .sub-slider {
-    box-shadow: 0 0 0 3px #0066ff;
+    box-shadow: 0 0 0 3px var(--faro-focus);
 }
 
 /* ---------------------------------------------------
