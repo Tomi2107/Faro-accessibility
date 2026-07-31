@@ -1,6 +1,9 @@
 Abrir faro con teclado
 Alt+F
 
+Pausar, reanudar o reproducir la última lectura
+Alt+P
+
 Salir
 Esc
 
