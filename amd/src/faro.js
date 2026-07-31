@@ -776,38 +776,97 @@ function actualizarPosicionBoton(){
 /* =========================================
     LECTOR DE VOZ
 ========================================= */
-function togglePauseResumeVoice() {
-    const icon = document.getElementById('faro-icon-pause-resume');
-    const btn = document.getElementById('faro-btn-pause-resume');
+let faroUltimoTextoLeido = "";
+let faroLecturaActual = null;
+let faroLecturaPausada = false;
+let faroLecturaFinalizoDurantePausa = false;
+let faroLecturaId = 0;
 
-    if (!window.speechSynthesis.speaking && !window.speechSynthesis.paused) {
+function anunciarEstadoVoz(mensaje) {
+    const anunciador = document.getElementById("faro-anunciador");
+
+    if (anunciador) {
+        anunciador.textContent = mensaje;
+    }
+}
+
+function togglePauseResumeVoice() {
+    if (!("speechSynthesis" in window)) {
         return;
     }
 
-    if (window.speechSynthesis.paused) {
-        window.speechSynthesis.resume();
-        if (icon) icon.textContent = 'pause';
-        if (btn) btn.setAttribute('aria-label', 'Pausar lectura');
-    } else {
+    if (faroLecturaPausada || window.speechSynthesis.paused) {
+        if (
+            faroLecturaFinalizoDurantePausa ||
+            (!window.speechSynthesis.speaking && !window.speechSynthesis.paused)
+        ) {
+            reproducirTextoFaro(faroUltimoTextoLeido);
+        } else {
+            faroLecturaPausada = false;
+            window.speechSynthesis.resume();
+            showVoiceControls("pause");
+            anunciarEstadoVoz("Lectura reanudada.");
+        }
+
+        return;
+    }
+
+    if (window.speechSynthesis.speaking || faroLecturaActual) {
+        faroLecturaPausada = true;
         window.speechSynthesis.pause();
-        if (icon) icon.textContent = 'play_arrow';
-        if (btn) btn.setAttribute('aria-label', 'Reanudar lectura');
+        showVoiceControls("resume");
+        anunciarEstadoVoz("Lectura pausada. Presiona Alt + P para reanudar.");
+        return;
+    }
+
+    if (faroUltimoTextoLeido) {
+        reproducirTextoFaro(faroUltimoTextoLeido);
+    } else {
+        anunciarEstadoVoz("No hay una lectura anterior para reproducir.");
     }
 }
 
-function stopVoice() {
+function stopVoice({ limpiarUltimaLectura = false } = {}) {
+    faroLecturaId += 1;
+    faroLecturaActual = null;
+    faroLecturaPausada = false;
+    faroLecturaFinalizoDurantePausa = false;
     window.speechSynthesis.cancel();
-    hideVoiceControls();
+
+    if (limpiarUltimaLectura) {
+        faroUltimoTextoLeido = "";
+        hideVoiceControls();
+        return;
+    }
+
+    if (faroUltimoTextoLeido && faroState.voz) {
+        showVoiceControls("replay");
+        anunciarEstadoVoz(
+            "Lectura detenida. Presiona Alt + P para reproducirla nuevamente."
+        );
+    } else {
+        hideVoiceControls();
+    }
 }
 
-function showVoiceControls() {
+function showVoiceControls(accion = "pause") {
     const controls = document.getElementById('faro-voice-controls');
     const icon = document.getElementById('faro-icon-pause-resume');
     const btn = document.getElementById('faro-btn-pause-resume');
 
+    const estados = {
+        pause: { icono: "pause", etiqueta: "Pausar lectura" },
+        resume: { icono: "play_arrow", etiqueta: "Reanudar lectura" },
+        replay: {
+            icono: "play_arrow",
+            etiqueta: "Reproducir última lectura"
+        }
+    };
+    const estado = estados[accion] || estados.pause;
+
     if (controls) controls.classList.add('active');
-    if (icon) icon.textContent = 'pause';
-    if (btn) btn.setAttribute('aria-label', 'Pausar lectura');
+    if (icon) icon.textContent = estado.icono;
+    if (btn) btn.setAttribute('aria-label', estado.etiqueta);
 }
 
 function hideVoiceControls() {
@@ -820,40 +879,69 @@ function hideVoiceControls() {
     if (btn) btn.setAttribute('aria-label', 'Pausar lectura');
 }
 
-document.addEventListener('click', function(e) {
-    if(!faroState.voz) return;
-    if(e.target.closest('#faro-extension-root')) return;
-
-    window.speechSynthesis.cancel();
-    let textToRead = e.target.innerText || e.target.alt || e.target.value;
-    if(textToRead && textToRead.trim() !== '') {
-        let msg = new SpeechSynthesisUtterance(textToRead);
-        msg.lang = document.documentElement.lang || "es-AR";
-        msg.volume = faroState.volumenVoz / 100;
-        msg.rate = 0.5 + (faroState.velocidadVoz / 100) * 1.5;
-        msg.onstart = function() { showVoiceControls(); };
-        msg.onend = function() { hideVoiceControls(); };
-        msg.onerror = function() { hideVoiceControls(); };
-        window.speechSynthesis.speak(msg);
-    }
-});
-
-function hablarFaro(texto) {
+function reproducirTextoFaro(texto) {
     if (!("speechSynthesis" in window) || !texto || !String(texto).trim()) {
         return;
     }
 
+    const textoLimpio = String(texto).trim();
+    const lecturaId = ++faroLecturaId;
+
+    faroUltimoTextoLeido = textoLimpio;
+    faroLecturaPausada = false;
+    faroLecturaFinalizoDurantePausa = false;
+
     window.speechSynthesis.cancel();
 
-    const msg = new SpeechSynthesisUtterance(String(texto).trim());
+    const msg = new SpeechSynthesisUtterance(textoLimpio);
+    faroLecturaActual = msg;
     msg.lang = document.documentElement.lang || "es-AR";
     msg.volume = faroState.volumenVoz / 100;
     msg.rate = 0.5 + (faroState.velocidadVoz / 100) * 1.5;
-    msg.onstart = function() { showVoiceControls(); };
-    msg.onend = function() { hideVoiceControls(); };
-    msg.onerror = function() { hideVoiceControls(); };
+    msg.onstart = function() {
+        if (lecturaId !== faroLecturaId) return;
+        showVoiceControls("pause");
+    };
+    msg.onend = function() {
+        if (lecturaId !== faroLecturaId) return;
+
+        if (faroLecturaPausada) {
+            faroLecturaFinalizoDurantePausa = true;
+            showVoiceControls("resume");
+            return;
+        }
+
+        faroLecturaActual = null;
+        hideVoiceControls();
+    };
+    msg.onerror = function() {
+        if (lecturaId !== faroLecturaId) return;
+
+        if (faroLecturaPausada) {
+            faroLecturaFinalizoDurantePausa = true;
+            showVoiceControls("resume");
+            return;
+        }
+
+        faroLecturaActual = null;
+        hideVoiceControls();
+    };
 
     window.speechSynthesis.speak(msg);
+}
+
+document.addEventListener('click', function(e) {
+    if(!faroState.voz) return;
+    if(e.target.closest('#faro-extension-root')) return;
+
+    let textToRead = e.target.innerText || e.target.alt || e.target.value;
+    if(textToRead && textToRead.trim() !== '') {
+        reproducirTextoFaro(textToRead);
+    }
+});
+
+function hablarFaro(texto) {
+    reproducirTextoFaro(texto);
 }
 
 function cambiarVelocidadVoz(valor){
@@ -895,7 +983,7 @@ function toggleVoz(checkbox){
     faroState.voz = Boolean(checkbox.checked);
 
     if (!faroState.voz) {
-        stopVoice();
+        stopVoice({ limpiarUltimaLectura: true });
 
         if (faroState.perfil === "voz") {
             faroState.perfil = null;
@@ -1120,7 +1208,7 @@ function restablecerAjustes() {
     faroState.posicionBoton = "right";
 
     // Detener cualquier lectura
-    stopVoice();
+    stopVoice({ limpiarUltimaLectura: true });
 
     // Aplicar el nuevo estado
     aplicarEstado();
@@ -1150,7 +1238,7 @@ function restablecerAjustes() {
 function aplicarPerfil(perfil) {
 
     // Cada perfil reemplaza al anterior y debe detener cualquier lectura activa.
-    stopVoice();
+    stopVoice({ limpiarUltimaLectura: true });
 
     // Guardar perfil seleccionado
     faroState.perfil = perfil;
@@ -1180,11 +1268,7 @@ function aplicarPerfil(perfil) {
 
         case "voz":
             faroState.voz = true;
-            setTimeout(()=>{
-                if (faroState.voz && faroState.perfil === "voz") {
-                    hablarFaro("Asistente por voz activado");
-                }
-            },300);
+            hablarFaro("Asistente por voz activado");
 
             break;
 
@@ -1874,6 +1958,24 @@ document.addEventListener("keydown", (e)=>{
         e.preventDefault();
 
         toggleMenu();
+
+    }
+
+});
+document.addEventListener("keydown", (e)=>{
+
+    if(e.altKey && e.key.toLowerCase() === "p"){
+
+        e.preventDefault();
+
+        if (!faroState.voz) {
+            anunciarEstadoVoz(
+                "Activa el asistente por voz para utilizar Alt + P."
+            );
+            return;
+        }
+
+        togglePauseResumeVoice();
 
     }
 
