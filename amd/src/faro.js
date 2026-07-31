@@ -828,16 +828,21 @@ document.addEventListener('click', function(e) {
 });
 
 function hablarFaro(texto) {
+    if (!("speechSynthesis" in window) || !texto || !String(texto).trim()) {
+        return;
+    }
 
     window.speechSynthesis.cancel();
 
-    const msg =
-        new SpeechSynthesisUtterance(texto);
-
-    msg.lang = "es-ES";
+    const msg = new SpeechSynthesisUtterance(String(texto).trim());
+    msg.lang = document.documentElement.lang || "es-AR";
+    msg.volume = faroState.volumenVoz / 100;
+    msg.rate = 0.5 + (faroState.velocidadVoz / 100) * 1.5;
+    msg.onstart = function() { showVoiceControls(); };
+    msg.onend = function() { hideVoiceControls(); };
+    msg.onerror = function() { hideVoiceControls(); };
 
     window.speechSynthesis.speak(msg);
-
 }
 
 function cambiarVelocidadVoz(valor){
