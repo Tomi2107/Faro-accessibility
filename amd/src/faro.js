@@ -191,6 +191,17 @@ function ocultarSubmenus() {
 
 function toggleMenu() {
 
+    if (!FARO_READY) {
+        const anunciador = document.getElementById("faro-anunciador");
+
+        if (anunciador) {
+            anunciador.textContent =
+                "Las herramientas de accesibilidad se están cargando.";
+        }
+
+        return;
+    }
+
     const menu = document.getElementById("menuAccesibilidad");
     const btnFlotante = document.getElementById("btnFlotante");
 
@@ -1770,9 +1781,26 @@ async function iniciarFaro() {
     })();
 
     const root = document.getElementById("faro-extension-root");
+    const btnFlotante = document.getElementById("btnFlotante");
+
+    // El botón no debe depender de la respuesta del backend para aparecer.
+    // Resolvemos el estado del tour localmente y mostramos FARO antes de
+    // recuperar las preferencias remotas.
+    if (tourYaVisto()) {
+        cerrarFaro();
+    }
 
     if (root) {
-        root.style.visibility = "hidden";
+        root.style.visibility = "visible";
+    }
+
+    if (btnFlotante) {
+        btnFlotante.disabled = true;
+        btnFlotante.setAttribute("aria-busy", "true");
+        btnFlotante.setAttribute(
+            "aria-label",
+            "Cargando herramientas de accesibilidad"
+        );
     }
 
     FARO_READY = false;
@@ -1782,23 +1810,22 @@ async function iniciarFaro() {
         aplicarEstado();
         sincronizarControles();
 
-        if (tourYaVisto()) {
-            cerrarFaro();
-        }
-
-        FARO_READY = true;
-
     } catch (e) {
         console.error(e);
     } finally {
-        requestAnimationFrame(() => {
-            if (root) {
-                root.style.visibility = "visible";
-            }
-        });
+        FARO_READY = true;
+
+        if (btnFlotante) {
+            btnFlotante.disabled = false;
+            btnFlotante.removeAttribute("aria-busy");
+            btnFlotante.setAttribute(
+                "aria-label",
+                "Herramientas de accesibilidad"
+            );
+        }
     }
-    
-    activarFocusTrap(document.getElementById("faro-extension-root"));
+
+    activarFocusTrap(root);
 }
 
 // Exponer funciones usadas por HTML
